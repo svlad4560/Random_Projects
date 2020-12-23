@@ -13,7 +13,9 @@ What are you trying to do?
 3: Find Payback Period
 Please type '1' or '2' and hit enter
 """))
-
+root = TK()
+root.title('Fin homework claculator')
+root.geometry('700x500')
 
 if type_of_problem == "1":
 
@@ -23,6 +25,7 @@ if type_of_problem == "1":
 
     root = Tk()
     root.title('Fin homework claculator')
+    root.geometry('700x500')
 
     e = Entry(root, width=35, borderwidth=5)
     e.grid(row = 0, column = 0, columnspan = 3, padx = 10, pady = 10)

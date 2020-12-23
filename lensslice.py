@@ -26,4 +26,4 @@ num_of_two = pizzas.count(2)
 print(num_of_two)
 
 print(dir(topping))
-print(dir(pizzas))
+print(pizzas)
