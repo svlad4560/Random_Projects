@@ -15,6 +15,16 @@ active_data = requests.get(most_active).json()
 
 # dcf_data = requests.get(dcf_url).json()
 # pprint.pprint(dcf_data)
+stock_list = ["TSLA","AAPL","DAL", "BA","CCL","NCLH","DIS","KO","T","WFC",'INTC',"UAL"]
+for stock in stock_list:
+    url ="https://financialmodelingprep.com/api/v3/profile/"+stock+"?apikey=2ead9f70179604e6f27f2a8fe3ffcf4a"
+    data = requests.get(url).json()
+    data_pd = pd.DataFrame(data)
+
+    last_price = int(data_pd["price"])
+    dcf = int(data_pd["dcf"])
+    if last_price >= dcf:
+        print(stock)
 
 data_pd = pd.DataFrame(data)
 # pprint.pprint(data_pd['dcf'])
@@ -48,7 +58,6 @@ def search():
     else:
         last = Label(gui,text=last_price, height = 0, width=50, bg = "Red")
     last.grid(row=50, column=25)
-
 def clear():
     stock_entry.delete(0, END)
     last.destroy()
