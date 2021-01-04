@@ -32,6 +32,7 @@ def get_price_history(stocks):
     content = json.loads(page.content)
     return pd.DataFrame(data=content)
 
+print( get_price_history("AAPL"))
 def get_price_in_df(price_history):
     colums = ["open","close","high", "low", "volume"]
     indexs = "datetime"
@@ -44,7 +45,7 @@ new_pd = pd.DataFrame.from_dict(essentials)
 # for obj in essentials:
 
 
-print(new_pd)
+# print(new_pd)
 
 
 
