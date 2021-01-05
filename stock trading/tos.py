@@ -30,33 +30,9 @@ def get_price_history(stocks):
     full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
     page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
     content = json.loads(page.content)
-    return pd.DataFrame(data=content)
-
-print( get_price_history("AAPL"))
-def get_price_in_df(price_history):
-    colums = ["open","close","high", "low", "volume"]
-    indexs = "datetime"
-
-
-# print(get_price_in_df(get_price_history("AAPL")))
-price_data = get_price_history("BA")
-essentials = dict(price_data["candles"])
-new_pd = pd.DataFrame.from_dict(essentials)
-# for obj in essentials:
-
-
-# print(new_pd)
-
-
-
-
-df_price_data = pd.DataFrame(data = get_price_history("AAPL"))
-price_data = dict(df_price_data["candles"])
-key_values = essentials.values()
-
-
-
-# print(key_values)
+    data = pd.DataFrame(data=content)
+    df_of_columns = data["candles"].apply(pd.Series)
+    return df_of_columns
 
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
@@ -80,5 +56,29 @@ def get_smallCap():
             small_cap_list.append(stock)
     return small_cap_list
 
-def gap_up_trade():
-    return starting_balance
+# print(get_price_history("BA"))
+data_S = get_price_history("BA")
+new_df = data_S[::-1]
+open_search_value = 253
+open_search_value -= 1
+print(new_df.loc[open_search_value]["open"])
+# so then the last row is the values for yesterdays trading day
+def count_gap_ups(data):
+    # data is the get_price_history
+    # data['open'].iloc[-254]
+    open_search_value = 253
+    close_search_value = 252
+    gap_up_count = 0
+
+    for num in range(254):
+        open_value = data.loc[open_search_value]["open"]
+        close_value = data.loc[close_search_value]["close"]
+        if open_value > close_value:
+            gap_up_count += 1
+
+        open_value -= 1
+        close_search_value -= 1
+
+    return gap_up_count
+
+print(count_gap_ups(data_S))
