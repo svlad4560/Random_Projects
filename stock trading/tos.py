@@ -56,29 +56,53 @@ def get_smallCap():
             small_cap_list.append(stock)
     return small_cap_list
 
-# print(get_price_history("BA"))
-data_S = get_price_history("BA")
-new_df = data_S[::-1]
-open_search_value = 253
-open_search_value -= 1
-print(new_df.loc[open_search_value]["open"])
+
+data_S = get_price_history("AAPL")
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+data_S = data_S.drop(columns=["high", "low"])
+print(data_S[:10])
+# print(data_S)
 # so then the last row is the values for yesterdays trading day
 def count_gap_ups(data):
     # data is the get_price_history
     # data['open'].iloc[-254]
-    open_search_value = 253
-    close_search_value = 252
+    open_search_value = 1
+    close_search_value = 0
     gap_up_count = 0
+    range_count =len(data_S)
 
-    for num in range(254):
-        open_value = data.loc[open_search_value]["open"]
-        close_value = data.loc[close_search_value]["close"]
+    for num in range(10):
+        open_value = data_S.iloc[open_search_value]["open"]
+        close_value = data_S.iloc[close_search_value]["close"]
         if open_value > close_value:
             gap_up_count += 1
+            open_value += 1
+            close_search_value += 1
 
-        open_value -= 1
-        close_search_value -= 1
+        print(num)
 
     return gap_up_count
 
-print(count_gap_ups(data_S))
+print(str(count_gap_ups(data_S))+ " gap up count")
+print(str(len(data_S))+ " length of data frame")
+list_open = list(data_S["open"])
+
+print(list_open[0])
+
+
+
+# this is for the gap up percentage calulator
+open_search_value = 9
+close_search_value = 8
+open_value = data_S.iloc[open_search_value]["open"]
+close_value = data_S.iloc[close_search_value]["close"]
+gap_up_percent = ((open_value-close_value) / close_value)*100
+
+# this checks to see the date time if greater than it means older
+open_value = data_S.iloc[open_search_value]["datetime"]
+close_value = data_S.iloc[close_search_value]["datetime"]
+# if open_value > close_value:
+    # print("the bottom day is greater than the top date")
+
+
+# print(gap_up_percent)
