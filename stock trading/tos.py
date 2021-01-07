@@ -25,15 +25,16 @@ def get_fundamentals(stocks):
     fundamental_data = json.loads(page.content)
     return fundamental_data
 
-def get_price_history(stocks):
+def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_time):
     endpoint_price_history = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&period={period}&frequencyType={frequencyType}&frequency={frequency}'
-    full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
+    full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType=timeframe_big,period=num_of_days,frequencyType=timeframe,frequency=num_of_big_time)
+    # endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
     page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
     content = json.loads(page.content)
     data = pd.DataFrame(data=content)
     df_of_columns = data["candles"].apply(pd.Series)
     return df_of_columns
-
+data_S = get_price_history("BA", 'year',1,"daily",1)
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
@@ -56,40 +57,23 @@ def get_smallCap():
             small_cap_list.append(stock)
     return small_cap_list
 
-
-data_S = get_price_history("AAPL")
-pd.set_option("display.max_rows", None, "display.max_columns", None)
-data_S = data_S.drop(columns=["high", "low"])
-print(data_S[:10])
-# print(data_S)
-# so then the last row is the values for yesterdays trading day
 def count_gap_ups(data):
     # data is the get_price_history
-    # data['open'].iloc[-254]
-    open_search_value = 1
-    close_search_value = 0
     gap_up_count = 0
-    range_count =len(data_S)
-
-    for num in range(10):
-        open_value = data_S.iloc[open_search_value]["open"]
-        close_value = data_S.iloc[close_search_value]["close"]
+    for num in range(len(data.index) - 1):
+        open_value = data.iloc[num+1]["open"]
+        close_value = data.iloc[num]["close"]
         if open_value > close_value:
             gap_up_count += 1
-            open_value += 1
-            close_search_value += 1
-
-        print(num)
-
     return gap_up_count
 
-print(str(count_gap_ups(data_S))+ " gap up count")
-print(str(len(data_S))+ " length of data frame")
-list_open = list(data_S["open"])
-
-print(list_open[0])
+def breakout_fiveday(price_history):
 
 
+    return price_history
+
+
+data_S = get_price_history("BA", 'year',1,"daily",1)
 
 # this is for the gap up percentage calulator
 open_search_value = 9
@@ -106,3 +90,32 @@ close_value = data_S.iloc[close_search_value]["datetime"]
 
 
 # print(gap_up_percent)
+
+
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+# data_S = data_S.drop(columns=["high", "low"])
+print(data_S[:10])
+
+print(str(count_gap_ups(data_S))+ " gap up count")
+print(str(len(data_S))+ " length of data frame")
+
+
+five_day_range = []
+bars = data_S.iloc[-5:]['open']
+max_id = bars.max()
+print(str(bars) + " this is last 5 days of data")
+print(str(max_id)+" this is maxium number in last 5 days")
+
+for stat in data_S["high"]:
+    val = -5
+    val += stat
+    bars = data_S.iloc[stat:]['open']
+    print (bars)
+
+
+
+# for num in range(len(data.index) - 1):
+#     bars = data_S["open"][-5]
+#     is_new_high = False
+#     if len(bars.high) == 5:
+#         is_new_high = (bars.high[-1] > max(bars.high[:-1]))
