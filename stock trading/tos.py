@@ -35,6 +35,7 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     df_of_columns = data["candles"].apply(pd.Series)
     return df_of_columns
 data_S = get_price_history("BA", 'year',1,"daily",1)
+
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
@@ -67,10 +68,28 @@ def count_gap_ups(data):
             gap_up_count += 1
     return gap_up_count
 
+# print(data_S[:10])
+
+# print(data_S.index)
+
 def breakout_fiveday(price_history):
 
+    for nums in range(len(price_history.index) - 1):
+        list_of_five_day_range = []
+        #so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
+        list_of_max_value = []
+        bars = price_history.iloc[-5 + int(-nums): int(-nums)]["high"]
+        list_of_five_day_range.append(bars)
+        max_value = bars.max()
+        list_of_max_value.append(max_value)
+        # print( str(bars)+ " this is the veyr first list of range ")
 
-    return price_history
+
+    return list_of_five_day_range, list_of_max_value
+
+check_data = pd.DataFrame(data = breakout_fiveday(data_S))
+# check_data.to_csv("5 day range.csv")
+pprint.pprint(breakout_fiveday(data_S))
 
 
 data_S = get_price_history("BA", 'year',1,"daily",1)
@@ -94,23 +113,59 @@ close_value = data_S.iloc[close_search_value]["datetime"]
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 # data_S = data_S.drop(columns=["high", "low"])
-print(data_S[:10])
+print(data_S)
 
-print(str(count_gap_ups(data_S))+ " gap up count")
-print(str(len(data_S))+ " length of data frame")
+# print(str(count_gap_ups(data_S))+ " gap up count")
+# print(str(len(data_S))+ " length of data frame")
+# print(data_S.tail())
+
+# for nums in range(1):
+#     list_of_five_day_range = []
+#     #so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
+#     list_of_max_value = []
+#     bars = data_S.iloc[-5 + int(-nums): int(-nums)]["high"]
+#     list_of_five_day_range.append(bars)
+#     max_value = bars.max()
+#     list_of_max_value.append(max_value)
+    # print( str(bars)+ " this is the veyr first list of range ")
+
+# for numbers in range(len(datas.index) - 2):
+list_of_five_day_range = []
+#so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
+list_of_max_value = []
+bars = data_S.iloc[-5:]['high']
+list_of_five_day_range.append(list(bars))
+max_value = bars.max()
+list_of_max_value.append(max_value)
 
 
-five_day_range = []
-bars = data_S.iloc[-5:]['open']
+bars1 = data_S.iloc[-6:-1]['high']
+list_of_five_day_range.append(list(bars1))
+max_value1 = bars1.max()
+list_of_max_value.append(max_value1)
+
 max_id = bars.max()
-print(str(bars) + " this is last 5 days of data")
-print(str(max_id)+" this is maxium number in last 5 days")
+
+# [X,Y,Z] Z is the most recent with the list at [0] is the most recent data
+# print(str(list_of_five_day_range) + " this is last 5 days of data")
+
+# with the first number in the list is for the most recent first day high.
+# print(str(list_of_max_value)+" this is maxium number in last 5 days")
 
 for stat in data_S["high"]:
     val = -5
-    val += stat
-    bars = data_S.iloc[stat:]['open']
-    print (bars)
+    control = int(stat)
+    list_of_bars = []
+    list_of_max = []
+    value = True
+    if value == True:
+        bars = data_S.iloc[control + val:-5]['open']
+    value = False
+    bars = data_S.iloc[ control + val:-5]['open']
+    list_of_bars = bars.append(data_S.iloc[control + val:-5 - control]['open'])
+    max_id = bars.max()
+    list_of_max.append(max_id)
+    # print (max_id)
 
 
 
