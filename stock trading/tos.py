@@ -73,11 +73,24 @@ def count_gap_ups(data):
 # print(data_S.index)
 
 def breakout_fiveday(price_history):
+    list_of_five_day_range = []
+    #so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
+    list_of_max_value = []
+    list_of_bars = list(price_history['high'])
 
     for nums in range(len(price_history.index) - 1):
-        list_of_five_day_range = []
-        #so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
-        list_of_max_value = []
+
+        if nums == 0:
+            values = list_of_bars[-5+nums:]
+            list_of_five_day_range.append(values)
+            # print(values)
+
+        if nums != 0 :
+            valuez = list_of_bars[-6:-1]
+            list_of_five_day_range.append(valuez)
+            # print(valuez)
+
+
         bars = price_history.iloc[-5 + int(-nums): int(-nums)]["high"]
         list_of_five_day_range.append(bars)
         max_value = bars.max()
@@ -85,11 +98,11 @@ def breakout_fiveday(price_history):
         # print( str(bars)+ " this is the veyr first list of range ")
 
 
-    return list_of_five_day_range, list_of_max_value
+    return list_of_five_day_range
 
 check_data = pd.DataFrame(data = breakout_fiveday(data_S))
 # check_data.to_csv("5 day range.csv")
-pprint.pprint(breakout_fiveday(data_S))
+# pprint.pprint(breakout_fiveday(data_S))
 
 
 data_S = get_price_history("BA", 'year',1,"daily",1)
@@ -105,15 +118,14 @@ gap_up_percent = ((open_value-close_value) / close_value)*100
 open_value = data_S.iloc[open_search_value]["datetime"]
 close_value = data_S.iloc[close_search_value]["datetime"]
 # if open_value > close_value:
-    # print("the bottom day is greater than the top date")
+    # print("shit")
 
 
 # print(gap_up_percent)
 
-
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 # data_S = data_S.drop(columns=["high", "low"])
-print(data_S)
+# print(data_S[-10:])
 
 # print(str(count_gap_ups(data_S))+ " gap up count")
 # print(str(len(data_S))+ " length of data frame")
@@ -133,6 +145,7 @@ print(data_S)
 list_of_five_day_range = []
 #so then it starts with the first list being the most recent and then [X,Y,Z] Z is the most recent
 list_of_max_value = []
+list_of_bars = list(data_S['high'])
 bars = data_S.iloc[-5:]['high']
 list_of_five_day_range.append(list(bars))
 max_value = bars.max()
@@ -145,6 +158,8 @@ max_value1 = bars1.max()
 list_of_max_value.append(max_value1)
 
 max_id = bars.max()
+print(list_of_bars[-6:-1])
+print(data_S)
 
 # [X,Y,Z] Z is the most recent with the list at [0] is the most recent data
 # print(str(list_of_five_day_range) + " this is last 5 days of data")
