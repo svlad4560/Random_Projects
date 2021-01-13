@@ -68,7 +68,7 @@ def count_gap_ups(data):
             gap_up_count += 1
     return gap_up_count
 
-def gap_up_certain_uo_or_down(data,percent):
+def gap_up_certain_up_or_down(data,percent):
     #data is data_S
     open_list = []
     close_list = []
@@ -96,10 +96,77 @@ def gap_up_certain_uo_or_down(data,percent):
     if close_higher > close_lower:
         return ("You should have a long biase bc of the times that it gapped up "
         + str(percent)+" it has closed higher "+ str(close_higher) + " times. While only closeing lower "
-        + str(close_lower)+ " times. It gaps up "+ str((close_higher/length ) *100) + " percent")
+        + str(close_lower)+ " times. It gaps up "+ str((close_higher/length ) * 100) + " percent")
     else:
         return ("no biase detected")
     # return close_higher, close_lower , open_list, close_list
+
+def spy_tick_correlation():
+    tick_list_open = []
+    tick_list_close = []
+    spy_open_list = []
+    spy_close_list = []
+
+    count = 0
+    spy_green_count = 0
+    spy_red_count = 0
+    tick_above_zero_count = 0
+
+    spy_green_volume_list = []
+    spy_green_range_list = []
+    spy_red_volume_list = []
+    spy_red_range_list = []
+
+    tick_data = get_price_history("$TICK", 'year',1,"daily",1)
+    spy_data = get_price_history("SPY", 'year',1,"daily",1)
+    for value in range(len(spy_data.index) ):
+        spy_datetime = spy_data.iloc[value]['datetime']
+        tick_datetime = tick_data.iloc[value]['datetime']
+        if spy_datetime == tick_datetime:
+                tick_open_value = tick_data.iloc[value]['open']
+                tick_close_value = tick_data.iloc[value]['close']
+
+                spy_open_value = spy_data.iloc[value]['open']
+                spy_close_value = spy_data.iloc[value]["close"]
+
+                spy_green_volume_value = spy_data.iloc[value]['volume']
+                spy_green_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
+
+                spy_red_volume_value = spy_data.iloc[value]['volume']
+                spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
+
+                if tick_open_value > 1000:
+                    # where does spy close on the day red or green
+                    # what is the gap percentage?
+                    tick_list_open.append(tick_open_value)
+                    tick_list_close.append(tick_close_value)
+
+                    if tick_close_value > 0:
+                        tick_above_zero_count += 1
+
+                    if spy_close_value > spy_open_value:
+                        spy_green_count += 1
+                        spy_green_volume_list.append(spy_green_volume_value)
+                        spy_green_range_list.append(spy_green_range_value)
+
+                    if spy_close_value < spy_open_value:
+                        spy_red_count +=1
+
+                        spy_red_volume_list.append(spy_red_volume_value)
+                        spy_red_range_list.append(spy_red_range_value)
+
+    average_spy_green_volume_days = sum(spy_green_volume_list) / len(spy_green_volume_list)
+    average_spy_green_range_days = sum(spy_green_range_list) / len(spy_green_range_list)
+
+    average_spy_red_volume_days = sum(spy_red_volume_list) / len(spy_red_volume_list)
+    average_spy_red_range_days = sum(spy_red_range_list) / len(spy_red_range_list)
+
+    test = "There is  " + str(average_spy_green_volume_days-average_spy_red_volume_days)+ " more volume on Green SPY closes rather than red SPY closes from the open"
+    # now I need to get more specific. usually when there is a green day when is the low of day put in?
+
+    return spy_green_count , spy_red_count, average_spy_green_range_days, average_spy_green_volume_days, test
+
+
 
 
 def breakout_fiveday(price_history):
@@ -115,26 +182,23 @@ def breakout_fiveday(price_history):
     # print(list_of_max_value)
     return list_of_five_day_range
 
-data_S = get_price_history("RKT", 'year',1,"daily",1)
+data_S = get_price_history("$TICK", 'year',1,"daily",1)
 # data_S.to_csv('data_S.csv')
 check_data = breakout_fiveday(data_S)
 
-print(gap_up_certain_uo_or_down(data_S, 5.00))
-# print(data_S)
+# print(gap_up_certain_up_or_down(data_S, 5.00))
+# print(spy_tick_correlation())
+test_data  = get_price_history("AAPL","day",10,"minute", 10)
+print(test_data)
 
 
 
-# this is for the gap up percentage calulator
-open_search_value = 9
-close_search_value = 8
-open_value = data_S.iloc[open_search_value]["open"]
-close_value = data_S.iloc[close_search_value]["close"]
-gap_up_percent = ((open_value-close_value) / close_value)*100
-# print(gap_up_percent)
+
 
 # this checks to see the date time if greater than it means older
-open_value = data_S.iloc[open_search_value]["datetime"]
-close_value = data_S.iloc[close_search_value]["datetime"]
+# open_value = data_S.iloc[open_search_value]["datetime"]
+# close_value = data_S.iloc[close_search_value]["datetime"]
+
 # if open_value > close_value:
     # print("shit")
 
