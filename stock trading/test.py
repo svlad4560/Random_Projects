@@ -1,11 +1,5 @@
-llist = [0,1,2,3,4]
-for n in range(10):
-    if n == 0 :
-        print("num is zero")
+list_one = [[1,2,3],[3,4],[6,8],[9,10]]
+for nums in range(len(list_one)):
+    print(nums)
 
-
-    if n != 0 :
-        print('num is not zero '+ str(llist[n])) 
-
-a = 0
-print(int(-a))
+# print(list_one)
