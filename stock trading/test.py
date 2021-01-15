@@ -1,5 +1,9 @@
-list_one = [[1,2,3],[3,4],[6,8],[9,10]]
-for nums in range(len(list_one)):
-    print(nums)
+import pandas as pd
 
-# print(list_one)
+
+list_one = [1,2,3,4,5,6,7,8]
+df = pd.DataFrame(data=list_one)
+# for nums in range(len(list_one)):
+#     print(nums)
+print(df)
+print(df[1:4])

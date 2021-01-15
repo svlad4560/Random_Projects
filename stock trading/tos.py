@@ -1,6 +1,8 @@
 import requests
 import json
 import pprint
+import matplotlib
+import matplotlib.pyplot as plt
 import pandas as pd
 
 starting_balance = 100000
@@ -166,9 +168,6 @@ def spy_tick_correlation():
 
     return spy_green_count , spy_red_count, average_spy_green_range_days, average_spy_green_volume_days, test
 
-
-
-
 def breakout_fiveday(price_history):
     list_of_five_day_range = []
     list_of_max_value = []
@@ -182,14 +181,30 @@ def breakout_fiveday(price_history):
     # print(list_of_max_value)
     return list_of_five_day_range
 
-data_S = get_price_history("$TICK", 'year',1,"daily",1)
+def reformat_datatime(data):
+    new_datetime_list = []
+    new_data = data
+    new_data = new_data.drop(columns = "datetime")
+    data = data.drop(columns = ['open','high','low','close','volume'])
+    for num in range(len(data.index)):
+        # datetime_value = data.iloc[num]['datetime']
+        datetime_value = pd.Timestamp(data.iloc[num]['datetime'], unit='ms')
+        new_datetime_list.append(datetime_value)
+
+    return new_data , data, new_datetime_list
+
+
+data_S = get_price_history("TSLA", 'year',1,"daily",1)
 # data_S.to_csv('data_S.csv')
 check_data = breakout_fiveday(data_S)
 
-# print(gap_up_certain_up_or_down(data_S, 5.00))
+print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(spy_tick_correlation())
 test_data  = get_price_history("AAPL","day",10,"minute", 10)
-print(test_data)
+# print(reformat_datatime(test_data))
+# print(pd.Timestamp(test_data.iloc[-1]['datetime'], unit='ms'))
+# print(data_S)
+# print(test_data)
 
 
 
