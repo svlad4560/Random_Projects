@@ -68,61 +68,149 @@ def count_gap_ups(data):
         close_value = data.iloc[num]["close"]
         if open_value > close_value:
             gap_up_count += 1
-
     return gap_up_count
+
 
 def gap_up_certain_up_or_down(data,percent):
     #data is data_S
     open_list = []
     close_list = []
     five_day_range_list = []
-
     close_lower = 0
     close_higher = 0
+    above_high = 0
+    range_75_to_high = 0
+    range_50_to_75 = 0
+    range_25_to_50 = 0
+    range_low_to_25 = 0
+    above_high_close = 0
+    range_75_to_high_close = 0
+    range_50_to_75_close = 0
+    range_25_to_50_close = 0
+    range_low_to_25_close = 0
+    green_range = []
+    red_range = []
+
     for num in range(len(data.index) - 1):
         open_value = data.iloc[num+1]["open"]
         close_value = data.iloc[num]["close"]
-        if num >= 4:
-            high = list(data["high"])
-            low = list(data["low"])
-
-            five_day_range_high = high[num:num-5]
-            five_day_range_low = low[num:num-5]
-            print(five_day_range_high,five_day_range_low)
-
-
-
         gap_up_percent = ((open_value-close_value) / close_value)*100
         long_term_range = []
-        if gap_up_percent > percent:
+
+        if gap_up_percent >= percent:
             search_open = data.iloc[num+1]["open"]
             search_close = data.iloc[num+1]["close"]
             open_list.append(search_open)
             close_list.append(search_close)
 
+            if search_open < search_close:
+                close_higher += 1
 
-    for num in range(len(open_list)):
-        if open_list[num] < close_list[num]:
-            close_higher += 1
-        if open_list[num] > close_list[num]:
-            close_lower += 1
+            if search_open > search_close:
+                close_lower += 1
 
-        # check where it is on the range so rember
-        # high - low is range and than if it opens above 75% its at the top of the range for exaple
+            high = list(data["high"])
+            low = list(data["low"])
+
+            if num > 4:
+                five_day_range_high = high[num-4:num+1]
+                actual_high = max(five_day_range_high)
+
+                five_day_range_low = low[num-4:num+1]
+                actual_low = min(five_day_range_low)
+
+                five_day_range_midpoint = (actual_high + actual_low) / 2
+                five_day_range_25 = (actual_low + five_day_range_midpoint) / 2
+                five_day_range_75 = (actual_high + five_day_range_midpoint) / 2
+
+                # print(actual_high, five_day_range_high , five_day_range_midpoint)
+                if search_open < search_close:
+                    if search_open > actual_high:
+                        above_high +=1
+                    if ((search_open < actual_high) and (search_open > five_day_range_75)):
+                        range_75_to_high += 1
+                    if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
+                        range_50_to_75 += 1
+                    if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
+                        range_25_to_50 += 1
+                    if ((search_open < five_day_range_25) and (search_open > actual_low)):
+                        range_low_to_25 += 1
+
+                if search_open > search_close:
+                    if search_open > actual_high:
+                        above_high_close +=1
+                    if ((search_open < actual_high) and (search_open > five_day_range_75)):
+                        range_75_to_high_close += 1
+                    if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
+                        range_50_to_75_close += 1
+                    if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
+                        range_25_to_50_close += 1
+                    if ((search_open < five_day_range_25) and (search_open > actual_low)):
+                        range_low_to_25_close += 1
 
 
+    # the next step is to compare close > open and closes <  open
+    # for num in range(len(open_list)):
+    #     if open_list[num] < close_list[num]:
+    #         close_higher += 1
+    #     if open_list[num] > close_list[num]:
+    #         close_lower += 1
     length = len(open_list)
     if close_lower > close_higher:
-        return ("You should have a short biase bc of the times that it gapped up "
-        + str(percent)+" it has closed lower "+ str(close_lower) + " times. While only closeing higher "
-        + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time")
+        if above_high_close > (range_75_to_high_close and range_50_to_75_close and range_25_to_50_close and range_low_to_25_close):
+            return(" Have a short Bias. When it gaps "
+            + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+            + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time." +"Best chances of success when gapping up above a high")
+        if range_75_to_high_close  > ( above_high_close and range_50_to_75_close and range_25_to_50_close and range_low_to_25_close):
+            return(" Have a short Bias.When it gaps "
+            + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+            + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time. "+ "Best chances of success when gapping up in the 75 percent range")
+        if range_50_to_75_close > ( above_high_close and range_75_to_high_close and range_25_to_50_close and range_low_to_25_close):
+            return(" Have a short Bias.When it gaps "
+            + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+            + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time."+ "Best chances of success when gapping up in the 50 to 75 percent range")
+        if  range_25_to_50_close > ( above_high_close and range_75_to_high_close and range_50_to_75_close  and range_low_to_25_close):
+            return(" Have a short Bias.When it gaps "
+            + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+            + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time."+ "Best chances of success when gapping up in the 25 to 50 percent range")
+        if  range_low_to_25_close > ( above_high_close and range_75_to_high_close and range_50_to_75_close  and range_25_to_50_close):
+            return(" Have a short Bias.When it gaps "
+            + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+            + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time."+ "Best chances of success when gapping up in the low to 25 percent range")
+
+        # return (" Have a short Bias.When it gaps "
+        # + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
+        # + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time")
+
     if close_higher > close_lower:
-        return ("You should have a long biase bc of the times that it gapped up "
-        + str(percent)+" it has closed higher "+ str(close_higher) + " times. While only closeing lower "
-        + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
+        if above_high > (range_75_to_high and range_50_to_75 and range_25_to_50 and range_low_to_25):
+            return(" Have a long Bias. When it gaps "
+            + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+            + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up above a high")
+        if range_75_to_high  > ( above_high and range_50_to_75 and range_25_to_50 and range_low_to_25):
+            return(" Have a long Bias.When it gaps "
+            + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+            + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the 75 percent range")
+        if range_50_to_75 > ( above_high and range_75_to_high and range_25_to_50 and range_low_to_25):
+            return(" Have a long Bias.When it gaps "
+            + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+            + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the 50 to 75 percent range")
+        if  range_25_to_50 > ( above_high and range_75_to_high and range_50_to_75  and range_low_to_25):
+            return(" Have a long Bias.When it gaps "
+            + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+            + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the 25 to 50 percent range")
+        if  range_low_to_25 > ( above_high and range_75_to_high and range_50_to_75  and range_25_to_50):
+            return(" Have a long Bias.When it gaps "
+            + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+            + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the low to 25 percent range")
+
+        # return (" Have a long Bias.When it gaps "
+        # + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
+        # + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
+
     else:
-        return ("no biase detected")
-    # return close_higher, close_lower , open_list, close_list
+        return ("no Bias detected")
+    # return  open_list, close_list
 
 def spy_tick_correlation():
     tick_list_open = []
@@ -160,7 +248,7 @@ def spy_tick_correlation():
                 spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
                 if tick_open_value > 1000:
-                    # where does spy close on the day red or green
+                    # where does spy close on the day red and green
                     # what is the gap percentage?
                     tick_list_open.append(tick_open_value)
                     tick_list_close.append(tick_close_value)
@@ -207,22 +295,25 @@ def reformat_datatime(data):
     new_data = data
     new_data = new_data.drop(columns = "datetime")
     data = data.drop(columns = ['open','high','low','close','volume'])
+
     for num in range(len(data.index)):
         # datetime_value = data.iloc[num]['datetime']
         datetime_value = pd.Timestamp(data.iloc[num]['datetime'], unit='ms')
         new_datetime_list.append(datetime_value)
 
+    # so this needs to be out with and just spit out the data with out the timestamp part
+
     return new_data , data, new_datetime_list
 
 
-data_S = get_price_history("TSLA", 'year',1,"daily",1)
-# data_S.to_csv('data_S.csv')
+data_S = get_price_history("AAPL", 'year',1,"daily",1)
+# data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
-
-print(gap_up_certain_up_or_down(data_S, 8.00))
+# print(data_S)
+print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(spy_tick_correlation())
 test_data  = get_price_history("AAPL","day",10,"minute", 10)
-# print(reformat_datatime(test_data))
+# print(reformat_datatime(data_S))
 # print(pd.Timestamp(test_data.iloc[-1]['datetime'], unit='ms'))
 # print(data_S)
 # print(test_data)
