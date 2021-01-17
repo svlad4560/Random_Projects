@@ -68,37 +68,58 @@ def count_gap_ups(data):
         close_value = data.iloc[num]["close"]
         if open_value > close_value:
             gap_up_count += 1
+
     return gap_up_count
 
 def gap_up_certain_up_or_down(data,percent):
     #data is data_S
     open_list = []
     close_list = []
+    five_day_range_list = []
+
     close_lower = 0
     close_higher = 0
     for num in range(len(data.index) - 1):
         open_value = data.iloc[num+1]["open"]
         close_value = data.iloc[num]["close"]
+        if num >= 4:
+            high = list(data["high"])
+            low = list(data["low"])
+
+            five_day_range_high = high[num:num-5]
+            five_day_range_low = low[num:num-5]
+            print(five_day_range_high,five_day_range_low)
+
+
+
         gap_up_percent = ((open_value-close_value) / close_value)*100
+        long_term_range = []
         if gap_up_percent > percent:
             search_open = data.iloc[num+1]["open"]
             search_close = data.iloc[num+1]["close"]
             open_list.append(search_open)
             close_list.append(search_close)
+
+
     for num in range(len(open_list)):
         if open_list[num] < close_list[num]:
             close_higher += 1
         if open_list[num] > close_list[num]:
             close_lower += 1
+
+        # check where it is on the range so rember
+        # high - low is range and than if it opens above 75% its at the top of the range for exaple
+
+
     length = len(open_list)
     if close_lower > close_higher:
         return ("You should have a short biase bc of the times that it gapped up "
         + str(percent)+" it has closed lower "+ str(close_lower) + " times. While only closeing higher "
-        + str(close_higher)+ " times. It gaps down "+ str((close_lower/length ) *100) + " percent")
+        + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time")
     if close_higher > close_lower:
         return ("You should have a long biase bc of the times that it gapped up "
         + str(percent)+" it has closed higher "+ str(close_higher) + " times. While only closeing lower "
-        + str(close_lower)+ " times. It gaps up "+ str((close_higher/length ) * 100) + " percent")
+        + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
     else:
         return ("no biase detected")
     # return close_higher, close_lower , open_list, close_list
@@ -134,6 +155,7 @@ def spy_tick_correlation():
                 spy_green_volume_value = spy_data.iloc[value]['volume']
                 spy_green_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
+
                 spy_red_volume_value = spy_data.iloc[value]['volume']
                 spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
@@ -151,12 +173,11 @@ def spy_tick_correlation():
                         spy_green_volume_list.append(spy_green_volume_value)
                         spy_green_range_list.append(spy_green_range_value)
 
+
                     if spy_close_value < spy_open_value:
                         spy_red_count +=1
-
                         spy_red_volume_list.append(spy_red_volume_value)
                         spy_red_range_list.append(spy_red_range_value)
-
     average_spy_green_volume_days = sum(spy_green_volume_list) / len(spy_green_volume_list)
     average_spy_green_range_days = sum(spy_green_range_list) / len(spy_green_range_list)
 
@@ -198,7 +219,7 @@ data_S = get_price_history("TSLA", 'year',1,"daily",1)
 # data_S.to_csv('data_S.csv')
 check_data = breakout_fiveday(data_S)
 
-print(gap_up_certain_up_or_down(data_S, 5.00))
+print(gap_up_certain_up_or_down(data_S, 8.00))
 # print(spy_tick_correlation())
 test_data  = get_price_history("AAPL","day",10,"minute", 10)
 # print(reformat_datatime(test_data))
