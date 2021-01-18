@@ -305,12 +305,43 @@ def reformat_datatime(data):
 
     return new_data , data, new_datetime_list
 
+def get_MA(data):
+    #data = data_S
+    data = list(data['close'])
+    ma_5 = sum(data[-5:]) / len(data[-5:])
+    ma_50 = sum(data[-50:]) / len(data[-50:])
+    ma_253 = sum(data[-253:]) / len(data[-253:])
+    return('This is the 5 day moving average ' + str(ma_5) ,'This is the 50 day moving average ' + str(ma_50) ,'This is the 253 day moving average ' + str(ma_253) )
+
+def back_test_MA_crossover(data):
+    ma_50_list = []
+    ma_5_list = []
+    # data = list(data['close'])
+    length = len(data)
+
+
+    for nums in range(length):
+        if  nums >= 49:
+            ma_50 = data.iloc[nums:nums -49]['close']
+            ma_5 = data.iloc[nums-5:nums+1]['close']
+            ma_50 = list(ma_50)
+            ma_5 = list(ma_5)
+            ma_50_list.append(ma_50)
+            ma_5_list.append(ma_5)
+
+
+
+
+    return(ma_50, ma_5, length)
+
 
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
 # data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
-# print(data_S)
-print(gap_up_certain_up_or_down(data_S, 5.00))
+print(data_S[:50])
+print(back_test_MA_crossover(data_S))
+# print(gap_up_certain_up_or_down(data_S, 5.00))
+# print(get_MA(data_S))
 # print(spy_tick_correlation())
 test_data  = get_price_history("AAPL","day",10,"minute", 10)
 # print(reformat_datatime(data_S))
