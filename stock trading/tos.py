@@ -319,7 +319,6 @@ def back_test_MA_crossover(data):
     # data = list(data['close'])
     length = len(data)
 
-
     for nums in range(length):
         if  nums >= 49:
             ma_50 = data.iloc[nums:nums -49]['close']
@@ -329,17 +328,69 @@ def back_test_MA_crossover(data):
             ma_50_list.append(ma_50)
             ma_5_list.append(ma_5)
 
-
-
-
     return(ma_50, ma_5, length)
+
+def lizard_trade(data):
+    open_list = []
+    close_list = []
+    five_day_range_list = []
+    close_lower = 0
+    close_higher = 0
+    above_high = 0
+    range_75_to_high = 0
+    range_50_to_75 = 0
+    range_25_to_50 = 0
+    range_low_to_25 = 0
+    above_high_close = 0
+    range_75_to_high_close = 0
+    range_50_to_75_close = 0
+    range_25_to_50_close = 0
+    range_low_to_25_close = 0
+    green_range = []
+    red_range = []
+
+    for num in range(len(data.index) - 1):
+        open_value = data.iloc[num+1]["open"]
+        close_value = data.iloc[num]["close"]
+        gap_up_percent = ((open_value-close_value) / close_value)*100
+        long_term_range = []
+
+
+        search_open = data.iloc[num+1]["open"]
+        search_close = data.iloc[num+1]["close"]
+        open_list.append(search_open)
+        close_list.append(search_close)
+
+        high = list(data["high"])
+        low = list(data["low"])
+
+        if num > 9:
+            five_day_range_high = high[num-10:num]
+            actual_high = max(five_day_range_high)
+
+            five_day_range_low = low[num-10:num]
+            actual_low = min(five_day_range_low)
+
+            five_day_range_midpoint = (actual_high + actual_low) / 2
+
+            five_day_range_75 = (actual_high + five_day_range_midpoint) / 2
+
+            print(five_day_range_75, search_open, five_day_range_high)
+
+            if search_open > five_day_range_75 and search_close > five_day_range_75:
+                if search_low < actual_low:
+                    print("new 10 day low")
+
+            # if search_open < five_day_range_75 and search_close < five_day_range_75:
+            #     print('not in range')
+
 
 
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
 # data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
-print(data_S[:50])
-print(back_test_MA_crossover(data_S))
+print(data_S)
+print(lizard_trade(data_S))
 # print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(get_MA(data_S))
 # print(spy_tick_correlation())
