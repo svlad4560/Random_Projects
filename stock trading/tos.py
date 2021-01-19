@@ -4,6 +4,8 @@ import pprint
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+import smtplib
+from email.message import EmailMessage
 
 starting_balance = 100000
 step = 0
@@ -385,12 +387,29 @@ def lizard_trade(data):
             #     print('not in range')
 
 
+def email_alert( body, to):
+    msg = EmailMessage()
+    msg.set_content(body)
+    # msg['subject'] = subject
+    msg['to'] = to
+
+    user = 'sebisalert@gmail.com'
+    msg['from'] = user
+    password = 'djmhxxqaufdxxbov'
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+    server.login(user, password)
+    server.send_message(msg)
+
+    server.quit
+
 
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
 # data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
-print(data_S)
-print(lizard_trade(data_S))
+print(reformat_datatime(data_S))
+# print(lizard_trade(data_S))
 # print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(get_MA(data_S))
 # print(spy_tick_correlation())
