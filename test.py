@@ -4,13 +4,13 @@ import time
 from selenium import webdriver
 from email.message import EmailMessage
 
-PATH = 'C:\Program Files (x86)\chromedriver.exe'
-driver = webdriver.Chrome(PATH)
+# PATH = 'C:\Program Files (x86)\chromedriver.exe'
+# driver = webdriver.Chrome(PATH)
 
-driver.get('https://www.myntcannabis.com/')
-time.sleep(5)
-
-print(driver.find_element_by_class_name("brand__link"))
+# driver.get('https://www.myntcannabis.com/')
+# time.sleep(5)
+#
+# print(driver.find_element_by_class_name("brand__link"))
 
 
 def email_alert( body, to):
@@ -29,6 +29,6 @@ def email_alert( body, to):
     server.send_message(msg)
 
     server.quit
-
+email_alert("test test", '7758468699@messaging.sprintpcs.com')
 # if __name__ == '__main__':
     # email_alert("this was sent with python", '7758468699@messaging.sprintpcs.com')

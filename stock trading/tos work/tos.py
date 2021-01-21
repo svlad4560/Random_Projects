@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import smtplib
 from email.message import EmailMessage
+import datetime
 
 starting_balance = 100000
 step = 0
+symbol_list_none = pd.read_csv ('symbol_list.csv')
 def get_right_extensions():
     right_list = []
     for symbol in symbol_list_none['ticker']:
@@ -16,7 +18,7 @@ def get_right_extensions():
             right_list.append(symbol)
     return right_list
 
-symbol_list_none = pd.read_csv ('symbol_list.csv')
+
 symbol_list = get_right_extensions()
 
 td_consumer_key = 'HS7K2SZXYBG2HMOYU6JOMXWAWA2QRASG'
@@ -37,6 +39,16 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     content = json.loads(page.content)
     data = pd.DataFrame(data=content)
     df_of_columns = data["candles"].apply(pd.Series)
+    updated_dates = []
+    test_dates = list(df_of_columns['datetime'])
+
+    for var in test_dates:
+        times = var
+        new_vars = datetime.datetime.fromtimestamp(times / 1e3)
+        updated_dates.append(str(new_vars))
+    df_of_columns['date'] = updated_dates
+    df_of_columns = df_of_columns.drop(columns = ["datetime"])
+
     return df_of_columns
 
 
@@ -404,11 +416,14 @@ def email_alert( body, to):
 
     server.quit
 
+# this is the correct way to have the statement
+# email_alert("test test", '7758468699@messaging.sprintpcs.com')
+
 
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
 # data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
-print(reformat_datatime(data_S))
+print((data_S))
 # print(lizard_trade(data_S))
 # print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(get_MA(data_S))
