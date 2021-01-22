@@ -10,16 +10,18 @@ import datetime
 
 starting_balance = 100000
 step = 0
+sector_etfs = {'tech': 'XLf'}
 symbol_list_none = pd.read_csv ('symbol_list.csv')
-def get_right_extensions():
-    right_list = []
-    for symbol in symbol_list_none['ticker']:
-        if "." not in symbol:
-            right_list.append(symbol)
-    return right_list
+# def get_right_extensions():
+#     right_list = []
+#     for symbol in symbol_list_none['ticker']:
+#         if "." not in symbol:
+#             right_list.append(symbol)
+#     return right_list
 
 
-symbol_list = get_right_extensions()
+print(symbol_list_none)
+print(sector_etfs)
 
 td_consumer_key = 'HS7K2SZXYBG2HMOYU6JOMXWAWA2QRASG'
 stock = "AAPL"
@@ -52,12 +54,12 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     return df_of_columns
 
 
-def get_options_data():
-    base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
-    endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
-    page = requests.get(url=endpoint, params={'apikey' : td_consumer_key})
-    content = json.loads(page.content)
-    return content
+# def get_options_data():
+#     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
+#     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
+#     page = requests.get(url=endpoint, params={'apikey' : td_consumer_key})
+#     content = json.loads(page.content)
+#     return content
 
 def get_marketCap(stocks):
     fund = get_fundamentals(stocks)
@@ -83,7 +85,6 @@ def count_gap_ups(data):
         if open_value > close_value:
             gap_up_count += 1
     return gap_up_count
-
 
 def gap_up_certain_up_or_down(data,percent):
     #data is data_S
@@ -162,7 +163,6 @@ def gap_up_certain_up_or_down(data,percent):
                     if ((search_open < five_day_range_25) and (search_open > actual_low)):
                         range_low_to_25_close += 1
 
-
     # the next step is to compare close > open and closes <  open
     # for num in range(len(open_list)):
     #     if open_list[num] < close_list[num]:
@@ -170,6 +170,7 @@ def gap_up_certain_up_or_down(data,percent):
     #     if open_list[num] > close_list[num]:
     #         close_lower += 1
     length = len(open_list)
+
     if close_lower > close_higher:
         if above_high_close > (range_75_to_high_close and range_50_to_75_close and range_25_to_50_close and range_low_to_25_close):
             return(" Have a short Bias. When it gaps "
@@ -191,7 +192,6 @@ def gap_up_certain_up_or_down(data,percent):
             return(" Have a short Bias.When it gaps "
             + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
             + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time."+ "Best chances of success when gapping up in the low to 25 percent range")
-
         # return (" Have a short Bias.When it gaps "
         # + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
         # + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time")
@@ -221,7 +221,6 @@ def gap_up_certain_up_or_down(data,percent):
         # return (" Have a long Bias.When it gaps "
         # + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
         # + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
-
     else:
         return ("no Bias detected")
     # return  open_list, close_list
@@ -420,7 +419,7 @@ def email_alert( body, to):
 # email_alert("test test", '7758468699@messaging.sprintpcs.com')
 
 
-data_S = get_price_history("AAPL", 'year',1,"daily",1)
+data_S = get_price_history("XLF", 'year',1,"daily",1)
 # data_S.to_csv('data_S_.csv')
 check_data = breakout_fiveday(data_S)
 print((data_S))

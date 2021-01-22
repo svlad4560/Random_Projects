@@ -34,17 +34,6 @@ def email_alert( body, to):
 
     server.quit
 
-
-def get_MA(data):
-    #data = data_S
-    data = list(data['close'])
-    ma_5 = sum(data[-5:]) / len(data[-5:])
-    ma_50 = sum(data[-50:]) / len(data[-50:])
-    ma_253 = sum(data[-253:]) / len(data[-253:])
-    return('This is the 5 day moving average ' + str(ma_5) ,'This is the 50 day moving average ' + str(ma_50) ,'This is the 253 day moving average ' + str(ma_253) )
-
-data_S = get_price_history("AAPL", 'year',1,"daily",1)
-
 basket_of_stocks = ['AMD','FB', 'AAPL', 'TSLA', 'SPY', 'QQQ']
 
 def send_ma_update():
@@ -57,7 +46,7 @@ def send_ma_update():
         variable = dataa[-1:]['close']
 
         if int(variable) < ma_5:
-            email_alert(stock + " is lower than its 5 day moving average", '7758468699@messaging.sprintpcs.com')
+            email_alert(stock + " is lower than its 5 day MA. Its 5 day MA is: " + str(ma_5), '7758468699@messaging.sprintpcs.com')
 
 
 

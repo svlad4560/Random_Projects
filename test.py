@@ -29,6 +29,7 @@ def email_alert( body, to):
     server.send_message(msg)
 
     server.quit
-email_alert("test test", '7758468699@messaging.sprintpcs.com')
+# this is the correct way to have the statement
+# email_alert("test test", '7758468699@messaging.sprintpcs.com')
 # if __name__ == '__main__':
     # email_alert("this was sent with python", '7758468699@messaging.sprintpcs.com')
