@@ -10,7 +10,13 @@ import datetime
 
 starting_balance = 100000
 step = 0
-sector_etfs = {'tech': 'XLf'}
+sector_etfs = ['XLF', 'XLV', 'QQQ', "XLE", "XLY" , "XLP"]
+# XLF: fincnicals
+# XLV: health compare
+# XLE : oil
+#ICLN: clean energy
+# XLY : broad consumer discretionary
+# XLP: consumer staples (WMT PEP)
 symbol_list_none = pd.read_csv ('symbol_list.csv')
 # def get_right_extensions():
 #     right_list = []

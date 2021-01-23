@@ -33,3 +33,13 @@ def email_alert( body, to):
 # email_alert("test test", '7758468699@messaging.sprintpcs.com')
 # if __name__ == '__main__':
     # email_alert("this was sent with python", '7758468699@messaging.sprintpcs.com')
+
+random = [0,1,2,3,4,5,6,7,8,9,10]
+# new = [(first[num:num+ 3]) for num in range(0, len(first), 3)]
+for num in random:
+    new_list = [(random[num:num+ 3]) for num in range(0, len(random), 3)]
+
+    # if len(new_list) < 3:
+    #     break
+    print(new_list)
+# print(test1)
