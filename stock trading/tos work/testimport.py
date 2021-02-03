@@ -17,7 +17,6 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     df_of_columns = data["candles"].apply(pd.Series)
     updated_dates = []
     test_dates = list(df_of_columns['datetime'])
-
     for var in test_dates:
         times = var
         new_vars = datetime.datetime.fromtimestamp(times / 1e3)
@@ -27,7 +26,7 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
     return df_of_columns
 
-data_S = get_price_history("XLF", 'year',1,"daily",1)
+# data_S = get_price_history("XLF", 'year',1,"daily",1)
 sector_etfs = ['XLF', 'XLV', 'QQQ', "XLE", "XLY" , "XLP", 'XLU', 'XLI', 'GDX']
 # XLF: fincnicals
 # XLV: health compare
@@ -44,6 +43,7 @@ def spy_tick_correlation():
     tick_list_close = []
     spy_open_list = []
     spy_close_list = []
+    spy_gap_list = []
     xlf_list_open = []
     xlf_list_close = []
     qqq_open_list = []
@@ -65,13 +65,32 @@ def spy_tick_correlation():
     spy_red_range_list = []
 
     tick_data = get_price_history("$TICK", 'year',1,"daily",1)
+    # tick_data.to_csv("tick.csv")
+    # tick_data = tick_data.read_csv('tick.csv')
+
     spy_data = get_price_history("SPY", 'year',1,"daily",1)
+    # spy_data.to_csv("spy.csv")
+    # spy_data = spy_data.read_csv('spy.csv')
 
     xlf_data = get_price_history("XLF", 'year',1,"daily",1)
+    # xlf.to_csv("xlf.csv")
+    # xlf_data = xlf_data.read_csv('xlf.csv')
+
     xlv_data = get_price_history("XLV", 'year',1,"daily",1)
+    # xlv_data.to_csv("xlv.csv")
+    # xlv_data = xlv_data.read_csv('xlv.csv')
+
     qqq_data = get_price_history("QQQ", 'year',1,"daily",1)
+    # qqq_data.to_csv("qqq.csv")
+    # qqq_data = qqq_data.read_csv('qqq.csv')
+
     xle_data = get_price_history("XLE", 'year',1,"daily",1)
+    # xle_data.to_csv("xle.csv")
+    # xle_data = xle_data.read_csv('xle.csv')
+
     xly_data = get_price_history("XLY", 'year',1,"daily",1)
+    # xly_data.to_csv("xly.csv")
+    # xly_data = xly_data.read_csv('xly.csv')
 
 
     for value in range(len(spy_data)-1):
@@ -88,9 +107,10 @@ def spy_tick_correlation():
 
             gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
-            if  tick_open_value > 1000 and gap_up_percent > 1.50 :
+            if  tick_open_value > 1000:
                 spy_open_list.append(spy_open_value_for_gap)
                 spy_close_list.append(spy_close_value_for_gap)
+                spy_gap_list.append(gap_up_percent)
 
                 xlf_open_value_for_gap = xlf_data.loc[value+1]['open']
                 xlf_close_value_for_gap = xlf_data.iloc[value]["close"]
@@ -119,28 +139,19 @@ def spy_tick_correlation():
                 day.append(xly_gap_up_percent)
                 sector_gap_up_list.append(day)
 
-
-
-    # sets_of_data = 0
-    # for value in range(len(sector_gap_up_list)):
-    #     # 0 : xlf
-    #     # 1 : xlv
-    #     # 2 : qqq
-    #     # 3: xle
-    #     # 4 : xly
-    #     range = sector_gap_up_list[value:value-5]
-    #
-    #     values = value + 1
-    #     value_check = value % 10
-    #     if value_check == 5 or value_check == 0:
-    #         print('good twice')
-    #         sets_of_data +=1
+    # for value in sector_gap_up_list:
+    #     for num in value:
+    #         print(num)
 
 
 
 
 
-    return sector_gap_up_list
+
+
+
+
+    return spy_gap_list
 #
 # length = len(spy_tick_correlation())
 # test = length%2

@@ -55,4 +55,4 @@ def send_ma_update():
         # print(variable)
 
 
-print(send_ma_update())
+send_ma_update()

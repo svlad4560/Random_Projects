@@ -26,8 +26,8 @@ symbol_list_none = pd.read_csv ('symbol_list.csv')
 #     return right_list
 
 
-print(symbol_list_none)
-print(sector_etfs)
+# print(symbol_list_none)
+# print(sector_etfs)
 
 td_consumer_key = 'HS7K2SZXYBG2HMOYU6JOMXWAWA2QRASG'
 stock = "AAPL"
@@ -40,8 +40,8 @@ def get_fundamentals(stocks):
     return fundamental_data
 
 def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_time):
-    endpoint_price_history = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&period={period}&frequencyType={frequencyType}&frequency={frequency}'
-    full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType=timeframe_big,period=num_of_days,frequencyType=timeframe,frequency=num_of_big_time)
+    endpoint_price_history = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&period={period}&frequencyType={frequencyType}&frequency={frequency}&needExtendedHoursData={needExtendedHoursData}'
+    full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType=timeframe_big,period=num_of_days,frequencyType=timeframe,frequency=num_of_big_time,needExtendedHoursData = False)
     # endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
     page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
     content = json.loads(page.content)
@@ -232,10 +232,22 @@ def gap_up_certain_up_or_down(data,percent):
     # return  open_list, close_list
 
 def spy_tick_correlation():
+#     SPY and TICK correlation:
+# -	Things that I want to learn.
+# o	Is their any good stats to know.
+# 	For ex. When TICK opens 1000 > with SPY gapping > 1.25% where does spy end up closing up or down?
+# •	We can make it more specific like when it is gapping over a 5 day range high.
+# 	We can also do this for the inverse.
+# 	I also want to see see where it closes if TICK is -1000 but then SPY is gapping up .50%
+
     tick_list_open = []
     tick_list_close = []
     spy_open_list = []
     spy_close_list = []
+    tick_1000_spy_neg_gap_list = []
+    spy_close_percentage_list = []
+    spy_count_for_inverse_list = []
+    spy_gap_up_list = []
 
     count = 0
     spy_green_count = 0
@@ -244,57 +256,87 @@ def spy_tick_correlation():
 
     spy_green_volume_list = []
     spy_green_range_list = []
+
     spy_red_volume_list = []
     spy_red_range_list = []
 
     tick_data = get_price_history("$TICK", 'year',1,"daily",1)
     spy_data = get_price_history("SPY", 'year',1,"daily",1)
-    for value in range(len(spy_data.index) ):
-        spy_datetime = spy_data.iloc[value]['datetime']
-        tick_datetime = tick_data.iloc[value]['datetime']
-        if spy_datetime == tick_datetime:
-                tick_open_value = tick_data.iloc[value]['open']
-                tick_close_value = tick_data.iloc[value]['close']
+    for value in range(len(spy_data.index)-1 ):
 
-                spy_open_value = spy_data.iloc[value]['open']
-                spy_close_value = spy_data.iloc[value]["close"]
+        if value > 0 :
+            tick_open_value = tick_data.iloc[value]['open']
+            tick_close_value = tick_data.iloc[value]['close']
 
-                spy_green_volume_value = spy_data.iloc[value]['volume']
-                spy_green_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
+            spy_open_value = spy_data.iloc[value]['open']
+            spy_close_value = spy_data.iloc[value]["close"]
 
-
-                spy_red_volume_value = spy_data.iloc[value]['volume']
-                spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
-
-                if tick_open_value > 1000:
-                    # where does spy close on the day red and green
-                    # what is the gap percentage?
-                    tick_list_open.append(tick_open_value)
-                    tick_list_close.append(tick_close_value)
-
-                    if tick_close_value > 0:
-                        tick_above_zero_count += 1
-
-                    if spy_close_value > spy_open_value:
-                        spy_green_count += 1
-                        spy_green_volume_list.append(spy_green_volume_value)
-                        spy_green_range_list.append(spy_green_range_value)
+            spy_green_volume_value = spy_data.iloc[value]['volume']
+            spy_green_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
 
-                    if spy_close_value < spy_open_value:
-                        spy_red_count +=1
-                        spy_red_volume_list.append(spy_red_volume_value)
-                        spy_red_range_list.append(spy_red_range_value)
-    average_spy_green_volume_days = sum(spy_green_volume_list) / len(spy_green_volume_list)
-    average_spy_green_range_days = sum(spy_green_range_list) / len(spy_green_range_list)
+            spy_red_volume_value = spy_data.iloc[value]['volume']
+            spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
-    average_spy_red_volume_days = sum(spy_red_volume_list) / len(spy_red_volume_list)
-    average_spy_red_range_days = sum(spy_red_range_list) / len(spy_red_range_list)
+            spy_open_value_for_gap = spy_data.iloc[value +1]['open']
+            spy_close_value_for_gap = spy_data.iloc[value]["close"]
+            gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
-    test = "There is  " + str(average_spy_green_volume_days-average_spy_red_volume_days)+ " more volume on Green SPY closes rather than red SPY closes from the open"
+            # if tick_open_value > 1000:
+            #     # where does spy close on the day red and green
+            #     # what is the gap percentage?
+            #     tick_list_open.append(tick_open_value)
+            #     tick_list_close.append(tick_close_value)
+            #
+            #     if tick_close_value > 0:
+            #         tick_above_zero_count += 1
+            #
+            #     if spy_close_value > spy_open_value:
+            #         spy_green_count += 1
+            #         spy_green_volume_list.append(spy_green_volume_value)
+            #         spy_green_range_list.append(spy_green_range_value)
+            #
+            #
+            #     if spy_close_value < spy_open_value:
+            #         spy_red_count +=1
+            #         spy_red_volume_list.append(spy_red_volume_value)
+            #         spy_red_range_list.append(spy_red_range_value)
+
+            # if tick_open_value > 1000 and gap_up_percent < 0:
+            #     tick_1000_spy_neg_gap_list.append(gap_up_percent)
+            #     tick_list_open.append(tick_open_value)
+            #     tick_list_close.append(tick_close_value)
+            #     spy_close_percentage = ((spy_open_value-spy_close_value) / spy_close_value)*100
+            #     spy_close_percentage_list.append(spy_close_percentage)
+
+            if tick_open_value > 750 and gap_up_percent > .50:
+                # count_i = 0
+                # count_i += 1
+
+                tick_list_open.append(tick_close_value)
+
+
+
+
+
+
+
+    # average_spy_green_volume_days = sum(spy_green_volume_list) / len(spy_green_volume_list)
+    # average_spy_green_range_days = sum(spy_green_range_list) / len(spy_green_range_list)
+    #
+    # average_spy_red_volume_days = sum(spy_red_volume_list) / len(spy_red_volume_list)
+    # average_spy_red_range_days = sum(spy_red_range_list) / len(spy_red_range_list)
+
+    # test = "There is  " + str(average_spy_green_volume_days-average_spy_red_volume_days)+ " more volume on Green SPY closes rather than red SPY closes from the open"
     # now I need to get more specific. usually when there is a green day when is the low of day put in?
+    # for value in spy_close_percentage_list:
+    #     print(value)
 
-    return spy_green_count , spy_red_count, average_spy_green_range_days, average_spy_green_volume_days, test
+    return tick_list_open
+test_value = spy_tick_correlation()
+# to_excel_value = pd.DataFrame(data = test_value)
+# to_excel_value.to_csv('importvaluesz.csv')
+print(test_value)
 
 def breakout_fiveday(price_history):
     list_of_five_day_range = []
@@ -308,21 +350,6 @@ def breakout_fiveday(price_history):
 
     # print(list_of_max_value)
     return list_of_five_day_range
-
-def reformat_datatime(data):
-    new_datetime_list = []
-    new_data = data
-    new_data = new_data.drop(columns = "datetime")
-    data = data.drop(columns = ['open','high','low','close','volume'])
-
-    for num in range(len(data.index)):
-        # datetime_value = data.iloc[num]['datetime']
-        datetime_value = pd.Timestamp(data.iloc[num]['datetime'], unit='ms')
-        new_datetime_list.append(datetime_value)
-
-    # so this needs to be out with and just spit out the data with out the timestamp part
-
-    return new_data , data, new_datetime_list
 
 def get_MA(data):
     #data = data_S
@@ -369,10 +396,11 @@ def lizard_trade(data):
     red_range = []
 
     for num in range(len(data.index) - 1):
-        open_value = data.iloc[num+1]["open"]
+        open_value = data.iloc[num]["open"]
         close_value = data.iloc[num]["close"]
-        gap_up_percent = ((open_value-close_value) / close_value)*100
+
         long_term_range = []
+
 
 
         search_open = data.iloc[num+1]["open"]
@@ -381,7 +409,16 @@ def lizard_trade(data):
         close_list.append(search_close)
 
         high = list(data["high"])
+        high_range = max(high)
+
         low = list(data["low"])
+        low_range = min(low)
+        range = (high_range + low_range) / 2
+        top_25 = (range + high_range) / 2
+        if open_value > top_25 and close_value > top_25:
+            # goes to check the ten day range
+            a = 5
+
 
         if num > 9:
             five_day_range_high = high[num-10:num]
@@ -425,30 +462,26 @@ def email_alert( body, to):
 # email_alert("test test", '7758468699@messaging.sprintpcs.com')
 
 
-data_S = get_price_history("XLF", 'year',1,"daily",1)
-# data_S.to_csv('data_S_.csv')
+data_S = get_price_history("AMD", 'day',5,"minute",1)
+data_S.to_csv('data_S_.csv')
+for num in range(len(data_S)):
+    print(num)
 check_data = breakout_fiveday(data_S)
-print((data_S))
+
 # print(lizard_trade(data_S))
 # print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(get_MA(data_S))
 # print(spy_tick_correlation())
-test_data  = get_price_history("AAPL","day",10,"minute", 10)
-# print(reformat_datatime(data_S))
-# print(pd.Timestamp(test_data.iloc[-1]['datetime'], unit='ms'))
 # print(data_S)
-# print(test_data)
+test_data  = get_price_history("AAPL","day",10,"minute", 10)
 
 
 
 
 
-# this checks to see the date time if greater than it means older
-# open_value = data_S.iloc[open_search_value]["datetime"]
-# close_value = data_S.iloc[close_search_value]["datetime"]
 
-# if open_value > close_value:
-    # print("shit")
+
+
 
 
 
