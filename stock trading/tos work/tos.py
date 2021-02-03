@@ -462,18 +462,18 @@ def email_alert( body, to):
 # email_alert("test test", '7758468699@messaging.sprintpcs.com')
 
 
-data_S = get_price_history("AMD", 'day',5,"minute",1)
-data_S.to_csv('data_S_.csv')
-for num in range(len(data_S)):
-    print(num)
-check_data = breakout_fiveday(data_S)
+data_S = get_price_history("AAPL", 'year',1,"daily",1)
+# data_S.to_csv('data_S_.csv')
+# for num in range(len(data_S)):
+#     print(num)
+# check_data = breakout_fiveday(data_S)
 
 # print(lizard_trade(data_S))
-# print(gap_up_certain_up_or_down(data_S, 5.00))
+print(gap_up_certain_up_or_down(data_S, 5.00))
 # print(get_MA(data_S))
 # print(spy_tick_correlation())
 # print(data_S)
-test_data  = get_price_history("AAPL","day",10,"minute", 10)
+# test_data  = get_price_history("AAPL","day",10,"day", 1)
 
 
 

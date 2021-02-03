@@ -71,6 +71,18 @@ def spy_tick_correlation():
     spy_data = get_price_history("SPY", 'year',1,"daily",1)
     # spy_data.to_csv("spy.csv")
     # spy_data = spy_data.read_csv('spy.csv')
+    xlf_gapup_list = []
+    xlv_gapup_list = []
+    qqq_gapup_list = []
+    xle_gapup_list = []
+    xly_gapup_list = []
+
+    spy_close_percentage_list = []
+    xlf_close_percentage_list = []
+    xlv_close_percentage_list = []
+    qqq_close_percentage_list = []
+    xle_close_percentage_list = []
+    xly_close_percentage_list = []
 
     xlf_data = get_price_history("XLF", 'year',1,"daily",1)
     # xlf.to_csv("xlf.csv")
@@ -102,35 +114,49 @@ def spy_tick_correlation():
             spy_open_value = spy_data.iloc[value]['open']
             spy_close_value = spy_data.iloc[value]["close"]
 
-            spy_open_value_for_gap = spy_data.loc[value +1]['open']
-            spy_close_value_for_gap = spy_data.iloc[value]["close"]
+            spy_open_value_for_gap = spy_data.iloc[value]['open']
+            spy_close_value_for_gap = spy_data.iloc[value-1]["close"]
 
             gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
             if  tick_open_value > 1000:
-                spy_open_list.append(spy_open_value_for_gap)
-                spy_close_list.append(spy_close_value_for_gap)
+
                 spy_gap_list.append(gap_up_percent)
 
-                xlf_open_value_for_gap = xlf_data.loc[value+1]['open']
-                xlf_close_value_for_gap = xlf_data.iloc[value]["close"]
+                spy_open_value_for_close_percentage= spy_data.iloc[value]['open']
+                spy_close_value_for_close_percentage = spy_data.loc[value]["close"]
+                spy_close_percentage = ((spy_close_value_for_close_percentage-spy_open_value_for_close_percentage)/spy_open_value_for_close_percentage)*100
+
+                xlf_open_value_for_gap = xlf_data.loc[value]['open']
+                xlf_close_value = xlf_data.loc[value]['close']
+                xlf_close_value_for_gap = xlf_data.iloc[value-1]["close"]
+                xlf_close_percentage = ((xlf_close_value-xlf_open_value_for_gap)/xlf_open_value_for_gap) *100
                 xlf_gap_up_percent = ((xlf_open_value_for_gap-xlf_close_value_for_gap) / xlf_close_value_for_gap)*100
 
-                xlv_open_value_for_gap = xlv_data.loc[value+1]['open']
-                xlv_close_value_for_gap = xlv_data.iloc[value]["close"]
+                xlv_open_value_for_gap = xlv_data.iloc[value]['open']
+                xlv_close_value = xlv_data.iloc[value]['close']
+                xlv_close_value_for_gap = xlv_data.loc[value-1]["close"]
+                xlv_close_percentage = ((xlv_close_value-xlv_open_value_for_gap)/xlv_open_value_for_gap) *100
                 xlv_gap_up_percent = ((xlv_open_value_for_gap-xlv_close_value_for_gap) / xlv_close_value_for_gap)*100
 
-                qqq_open_value_for_gap = qqq_data.loc[value+1]['open']
-                qqq_close_value_for_gap = qqq_data.iloc[value]["close"]
+                qqq_open_value_for_gap = qqq_data.iloc[value]['open']
+                qqq_close_value = qqq_data.iloc[value]['close']
+                qqq_close_value_for_gap = qqq_data.loc[value-1]["close"]
+                qqq_close_percentage = ((qqq_close_value-qqq_open_value_for_gap)/qqq_open_value_for_gap) *100
                 qqq_gap_up_percent = ((qqq_open_value_for_gap-qqq_close_value_for_gap) / qqq_close_value_for_gap)*100
 
-                xle_open_value_for_gap = xle_data.loc[value+1]['open']
-                xle_close_value_for_gap = xle_data.iloc[value]["close"]
+                xle_open_value_for_gap = xle_data.iloc[value]['open']
+                xle_close_value = xle_data.iloc[value]['close']
+                xle_close_value_for_gap = xle_data.iloc[value-1]["close"]
+                xle_close_percentage = ((xle_close_value-xle_open_value_for_gap)/xle_open_value_for_gap) *100
                 xle_gap_up_percent = ((xle_open_value_for_gap-xle_close_value_for_gap) / xle_close_value_for_gap)*100
 
-                xly_open_value_for_gap = xly_data.loc[value+1]['open']
-                xly_close_value_for_gap = xly_data.iloc[value]["close"]
+                xly_open_value_for_gap = xly_data.iloc[value]['open']
+                xly_close_value = xly_data.iloc[value]['close']
+                xly_close_value_for_gap = xly_data.loc[value-1]["close"]
+                xly_close_percentage = ((xly_close_value-xly_open_value_for_gap)/xly_open_value_for_gap) *100
                 xly_gap_up_percent = ((xly_open_value_for_gap-xly_close_value_for_gap) / xly_close_value_for_gap)*100
+
                 day = []
                 day.append(xlf_gap_up_percent)
                 day.append(xlv_gap_up_percent)
@@ -139,9 +165,37 @@ def spy_tick_correlation():
                 day.append(xly_gap_up_percent)
                 sector_gap_up_list.append(day)
 
+
+                xlf_gapup_list.append(xlf_gap_up_percent)
+                xlv_gapup_list.append(xlv_gap_up_percent)
+                qqq_gapup_list.append(qqq_gap_up_percent)
+                xle_gapup_list.append(xle_gap_up_percent)
+                xly_gapup_list.append(xly_gap_up_percent)
+
+                spy_close_percentage_list.append(spy_close_percentage)
+                xlf_close_percentage_list.append(xlf_close_percentage)
+                xlv_close_percentage_list.append(xlv_close_percentage)
+                qqq_close_percentage_list.append(qqq_close_percentage)
+                xle_close_percentage_list.append(xle_close_percentage)
+                xly_close_percentage_list.append(xly_close_percentage)
+
+
+
+
+
+
+
     # for value in sector_gap_up_list:
     #     for num in value:
     #         print(num)
+    new_data_for_df = {'SPY Gap Up':spy_gap_list,"XLF Gap Up": xlf_gapup_list, "XLV Gap Up": xlv_gapup_list,"QQQ gap up":  qqq_gapup_list, "XLE Gap Up":xle_gapup_list, "XLY Gap Up": xly_gapup_list}
+    new_data = pd.DataFrame(new_data_for_df)
+    new_data['SPY Close Percentage'] = spy_close_percentage_list
+    new_data['XLF Close percentage'] = xlf_close_percentage_list
+    new_data['XLV Close percentage'] = xlv_close_percentage_list
+    new_data['QQQ Close percentage'] = qqq_close_percentage_list
+    new_data['XLE Close percentage'] = xle_close_percentage_list
+    new_data['XLY Close percentage'] = xly_close_percentage_list
 
 
 
@@ -151,11 +205,13 @@ def spy_tick_correlation():
 
 
 
-    return spy_gap_list
+
+    return new_data
 #
 # length = len(spy_tick_correlation())
 # test = length%2
 
-
+excel_data = spy_tick_correlation()
+excel_data.to_csv("sector data.csv")
 
 print(spy_tick_correlation())
