@@ -46,7 +46,7 @@ def send_ma_update():
         variable = dataa[-1:]['close']
 
         if int(variable) < ma_5:
-            email_alert(stock + " is lower than its 5 day MA. Its 5 day MA is: " + str(ma_5), '7758468699@messaging.sprintpcs.com')
+            email_alert(stock + " is lower than its 5 day MA. Its 5 day MA is: " + str(ma_5), '7752241146@tmomail.net')
 
 
 
