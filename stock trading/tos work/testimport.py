@@ -12,6 +12,7 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType=timeframe_big,period=num_of_days,frequencyType=timeframe,frequency=num_of_big_time)
     # endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
     page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
+    # look at content and convert into list / dict
     content = json.loads(page.content)
     data = pd.DataFrame(data=content)
     df_of_columns = data["candles"].apply(pd.Series)
@@ -125,7 +126,7 @@ def spy_tick_correlation():
 
                 spy_open_value_for_close_percentage= spy_data.iloc[value]['open']
                 spy_close_value_for_close_percentage = spy_data.loc[value]["close"]
-                spy_close_percentage = ((spy_close_value_for_close_percentage-spy_open_value_for_close_percentage)/spy_open_value_for_close_percentage)*100
+                spy_close_percentage = ((spy_close_value_for_close_percentage-spy_open_value_for_close_percentage) / spy_open_value_for_close_percentage)*100
 
 
                 xlf_open_value_for_gap = xlf_data.loc[value]['open']
@@ -149,7 +150,7 @@ def spy_tick_correlation():
                 xle_open_value_for_gap = xle_data.iloc[value]['open']
                 xle_close_value = xle_data.iloc[value]['close']
                 xle_close_value_for_gap = xle_data.iloc[value-1]["close"]
-                xle_close_percentage = ((xle_close_value-xle_open_value_for_gap)/xle_open_value_for_gap) *100
+                xle_close_percentage = ((xle_close_value-xle_open_value_for_gap)/xle_open_value_for_gap) * 100
                 xle_gap_up_percent = ((xle_open_value_for_gap-xle_close_value_for_gap) / xle_close_value_for_gap)*100
 
                 xly_open_value_for_gap = xly_data.iloc[value]['open']
