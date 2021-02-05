@@ -1,3 +1,4 @@
+# I am going through to check weather I am going through it correctly because the gap percentage was fucked up and I might have been looking at one day in the future
 import requests
 import json
 import pprint
@@ -54,12 +55,12 @@ def gap_up_certain_up_or_down(data,percent):
     red_range = []
 
     for num in range(len(data.index) - 1):
-        if num > 0 :
 
+        if num > 0 :
             open_value = data.iloc[num]["open"]
             close_value = data.iloc[num-1]["close"]
             gap_up_percent = ((open_value-close_value) / close_value)*100
-            long_term_range = []
+
 
             if gap_up_percent >= percent:
                 search_open = data.iloc[num]["open"]
@@ -77,18 +78,19 @@ def gap_up_certain_up_or_down(data,percent):
                 low = list(data["low"])
 
                 if num > 4:
-                    five_day_range_high = high[num-4:num+1]
+                    five_day_range_high = high[num-5:num]
                     actual_high = max(five_day_range_high)
 
-                    five_day_range_low = low[num-4:num+1]
+
+                    five_day_range_low = low[num-5:num]
                     actual_low = min(five_day_range_low)
 
                     five_day_range_midpoint = (actual_high + actual_low) / 2
                     five_day_range_25 = (actual_low + five_day_range_midpoint) / 2
                     five_day_range_75 = (actual_high + five_day_range_midpoint) / 2
 
-                    # print(actual_high, five_day_range_high , five_day_range_midpoint)
-                    if search_open < search_close:
+                    # this checks if we closed higher than we open
+                    if search_open < search_close :
                         if search_open > actual_high:
                             above_high +=1
                         if ((search_open < actual_high) and (search_open > five_day_range_75)):
@@ -112,12 +114,7 @@ def gap_up_certain_up_or_down(data,percent):
                         if ((search_open < five_day_range_25) and (search_open > actual_low)):
                             range_low_to_25_close += 1
 
-    # the next step is to compare close > open and closes <  open
-    # for num in range(len(open_list)):
-    #     if open_list[num] < close_list[num]:
-    #         close_higher += 1
-    #     if open_list[num] > close_list[num]:
-    #         close_lower += 1
+
     length = len(open_list)
 
     if close_lower > close_higher:
@@ -167,11 +164,9 @@ def gap_up_certain_up_or_down(data,percent):
             + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
             + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the low to 25 percent range")
 
-        # return (" Have a long Bias.When it gaps "
-        # + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
-        # + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
+
     else:
         return ("no Bias detected")
 
 
-print(gap_up_certain_up_or_down(dataz, 5.00))
+print(gap_up_certain_up_or_down(dataz, 2.00))

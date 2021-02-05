@@ -85,7 +85,7 @@ def spy_tick_correlation():
     xly_close_percentage_list = []
 
     xlf_data = get_price_history("XLF", 'year',1,"daily",1)
-    # xlf.to_csv("xlf.csv")
+    # xlf_data.to_csv("xlf.csv")
     # xlf_data = xlf_data.read_csv('xlf.csv')
 
     xlv_data = get_price_history("XLV", 'year',1,"daily",1)
@@ -107,7 +107,7 @@ def spy_tick_correlation():
 
     for value in range(len(spy_data)-1):
 
-        if value > 0:
+        if value > 0 :
             tick_open_value = tick_data.iloc[value]['open']
             tick_close_value = tick_data.iloc[value]['close']
 
@@ -119,13 +119,14 @@ def spy_tick_correlation():
 
             gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
-            if  tick_open_value > 1000:
+            print(spy_open_value,spy_close_value, gap_up_percent )
 
-                spy_gap_list.append(gap_up_percent)
+            if  tick_open_value > 1000:
 
                 spy_open_value_for_close_percentage= spy_data.iloc[value]['open']
                 spy_close_value_for_close_percentage = spy_data.loc[value]["close"]
                 spy_close_percentage = ((spy_close_value_for_close_percentage-spy_open_value_for_close_percentage)/spy_open_value_for_close_percentage)*100
+
 
                 xlf_open_value_for_gap = xlf_data.loc[value]['open']
                 xlf_close_value = xlf_data.loc[value]['close']
@@ -165,7 +166,7 @@ def spy_tick_correlation():
                 day.append(xly_gap_up_percent)
                 sector_gap_up_list.append(day)
 
-
+                spy_gap_list.append(gap_up_percent)
                 xlf_gapup_list.append(xlf_gap_up_percent)
                 xlv_gapup_list.append(xlv_gap_up_percent)
                 qqq_gapup_list.append(qqq_gap_up_percent)

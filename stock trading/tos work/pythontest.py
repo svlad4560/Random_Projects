@@ -16,37 +16,32 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     # endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
     page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
     content = json.loads(page.content)
-    data = pd.DataFrame(data=content)
-    df_of_columns = data["candles"].apply(pd.Series)
+
+    open_list = []
+    high_list = []
+    low_list =[]
+    close_list = []
+    volume_list = []
+    datetime_list = []
     updated_dates = []
-    test_dates = list(df_of_columns['datetime'])
 
-    for var in test_dates:
-        times = var
-        new_vars = datetime.datetime.fromtimestamp(times / 1e3)
-        updated_dates.append(str(new_vars))
-    df_of_columns['date'] = updated_dates
-    df_of_columns = df_of_columns.drop(columns = ["datetime"])
+    for i in content['candles']:
+        open_list.append( i['open'])
+        high_list.append(i['high'])
+        low_list.append(i['low'])
+        close_list.append(i['close'])
+        volume_list.append(i['volume'])
+        time = i['datetime']
+        new_time = datetime.datetime.fromtimestamp(time / 1e3)
+        datetime_list.append(str(new_time))
 
-    return df_of_columns
+    data_dic = {stocks:{'open':open_list,'high': high_list, "low": low_list, "close": close_list, "volume":volume_list, 'datetime':datetime_list}}
+
+    return data_dic
+
+dataz = get_price_history("AAPL", 'year',1,"daily",1)
+# data_df = pd.DataFrame(dataz[0])
+open_data = dataz['AAPL']['open']
 
 
-data = get_price_history("AAPL","day",10,"minute", 1)
-
-bar_range_list = []
-for num in range(len(data)):
-    top = data.loc[num]['high']
-    bottom = data.loc[num]['low']
-    ranges = top - bottom
-    bar_range_list.append(ranges)
-
-average_bar = sum(bar_range_list)/ len(bar_range_list)
-# print(average_bar)
-
-volume_list = []
-for nums in range(len(data)):
-    volume = data.loc[nums]['volume']
-    volume_list.append(volume)
-
-average_volume = sum(volume_list) / len(volume_list)
-print(average_volume)
+pprint.pprint(open_data)

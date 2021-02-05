@@ -59,20 +59,18 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
     return df_of_columns
 
-
-# def get_options_data():
-#     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
-#     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
-#     page = requests.get(url=endpoint, params={'apikey' : td_consumer_key})
-#     content = json.loads(page.content)
-#     return content
-
+data_S = get_price_history("AAPL", 'year',1,"daily",1)
+def get_options_data():
+    base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
+    endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')
+    page = requests.get(url=endpoint, params={'apikey' : td_consumer_key})
+    content = json.loads(page.content)
+    return content
 def get_marketCap(stocks):
     fund = get_fundamentals(stocks)
     first_key = fund[stocks]
     second_key = first_key['fundamental']
     return second_key['marketCap']
-
 def get_smallCap():
     global small_cap_list
     small_cap_list = []
@@ -81,15 +79,16 @@ def get_smallCap():
         if market_cap < 10:
             small_cap_list.append(stock)
     return small_cap_list
-
 def count_gap_ups(data):
     # data is the get_price_history
     gap_up_count = 0
     for num in range(len(data.index) - 1):
-        open_value = data.iloc[num+1]["open"]
-        close_value = data.iloc[num]["close"]
-        if open_value > close_value:
-            gap_up_count += 1
+        if num > 0:
+            open_value = data.iloc[num]["open"]
+            close_value = data.iloc[num-1]["close"]
+            gap_percent = ((open_value-close_value)/close_value)*100
+            if open_value > close_value and gap_percent > 5.0:
+                gap_up_count += 1
     return gap_up_count
 
 def gap_up_certain_up_or_down(data,percent):
@@ -113,68 +112,66 @@ def gap_up_certain_up_or_down(data,percent):
     red_range = []
 
     for num in range(len(data.index) - 1):
-        open_value = data.iloc[num+1]["open"]
-        close_value = data.iloc[num]["close"]
-        gap_up_percent = ((open_value-close_value) / close_value)*100
-        long_term_range = []
 
-        if gap_up_percent >= percent:
-            search_open = data.iloc[num+1]["open"]
-            search_close = data.iloc[num+1]["close"]
-            open_list.append(search_open)
-            close_list.append(search_close)
+        if num > 0 :
+            open_value = data.iloc[num]["open"]
+            close_value = data.iloc[num-1]["close"]
+            gap_up_percent = ((open_value-close_value) / close_value)*100
 
-            if search_open < search_close:
-                close_higher += 1
 
-            if search_open > search_close:
-                close_lower += 1
+            if gap_up_percent >= percent:
+                search_open = data.iloc[num]["open"]
+                search_close = data.iloc[num]["close"]
+                open_list.append(search_open)
+                close_list.append(search_close)
 
-            high = list(data["high"])
-            low = list(data["low"])
-
-            if num > 4:
-                five_day_range_high = high[num-4:num+1]
-                actual_high = max(five_day_range_high)
-
-                five_day_range_low = low[num-4:num+1]
-                actual_low = min(five_day_range_low)
-
-                five_day_range_midpoint = (actual_high + actual_low) / 2
-                five_day_range_25 = (actual_low + five_day_range_midpoint) / 2
-                five_day_range_75 = (actual_high + five_day_range_midpoint) / 2
-
-                # print(actual_high, five_day_range_high , five_day_range_midpoint)
                 if search_open < search_close:
-                    if search_open > actual_high:
-                        above_high +=1
-                    if ((search_open < actual_high) and (search_open > five_day_range_75)):
-                        range_75_to_high += 1
-                    if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
-                        range_50_to_75 += 1
-                    if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
-                        range_25_to_50 += 1
-                    if ((search_open < five_day_range_25) and (search_open > actual_low)):
-                        range_low_to_25 += 1
+                    close_higher += 1
 
                 if search_open > search_close:
-                    if search_open > actual_high:
-                        above_high_close +=1
-                    if ((search_open < actual_high) and (search_open > five_day_range_75)):
-                        range_75_to_high_close += 1
-                    if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
-                        range_50_to_75_close += 1
-                    if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
-                        range_25_to_50_close += 1
-                    if ((search_open < five_day_range_25) and (search_open > actual_low)):
-                        range_low_to_25_close += 1
+                    close_lower += 1
 
-    # the next step is to compare close > open and closes <  open
-    # for num in range(len(open_list)):
-    #     if open_list[num] < close_list[num]:
-    #         close_higher += 1
-    #     if open_list[num] > close_list[num]:
-    #         close_lower += 1
+                high = list(data["high"])
+                low = list(data["low"])
+
+                if num > 4:
+                    five_day_range_high = high[num-5:num]
+                    actual_high = max(five_day_range_high)
+
+
+                    five_day_range_low = low[num-5:num]
+                    actual_low = min(five_day_range_low)
+
+                    five_day_range_midpoint = (actual_high + actual_low) / 2
+                    five_day_range_25 = (actual_low + five_day_range_midpoint) / 2
+                    five_day_range_75 = (actual_high + five_day_range_midpoint) / 2
+
+                    # this checks if we closed higher than we open
+                    if search_open < search_close :
+                        if search_open > actual_high:
+                            above_high +=1
+                        if ((search_open < actual_high) and (search_open > five_day_range_75)):
+                            range_75_to_high += 1
+                        if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
+                            range_50_to_75 += 1
+                        if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
+                            range_25_to_50 += 1
+                        if ((search_open < five_day_range_25) and (search_open > actual_low)):
+                            range_low_to_25 += 1
+
+                    if search_open > search_close:
+                        if search_open > actual_high:
+                            above_high_close +=1
+                        if ((search_open < actual_high) and (search_open > five_day_range_75)):
+                            range_75_to_high_close += 1
+                        if ((search_open < five_day_range_75) and (search_open > five_day_range_midpoint)):
+                            range_50_to_75_close += 1
+                        if ((search_open < five_day_range_midpoint) and (search_open > five_day_range_25)):
+                            range_25_to_50_close += 1
+                        if ((search_open < five_day_range_25) and (search_open > actual_low)):
+                            range_low_to_25_close += 1
+
+
     length = len(open_list)
 
     if close_lower > close_higher:
@@ -198,9 +195,7 @@ def gap_up_certain_up_or_down(data,percent):
             return(" Have a short Bias.When it gaps "
             + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
             + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time."+ "Best chances of success when gapping up in the low to 25 percent range")
-        # return (" Have a short Bias.When it gaps "
-        # + str(percent)+" it has closed lower "+ str(close_lower) + " times. Closing higher "
-        # + str(close_higher)+ " times. It closes lower than it opened "+ str((close_lower/length ) *100) + " percent of the time")
+
 
     if close_higher > close_lower:
         if above_high > (range_75_to_high and range_50_to_75 and range_25_to_50 and range_low_to_25):
@@ -224,12 +219,11 @@ def gap_up_certain_up_or_down(data,percent):
             + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
             + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time. Best chances of success when gapping up in the low to 25 percent range")
 
-        # return (" Have a long Bias.When it gaps "
-        # + str(percent)+" it has closed higher "+ str(close_higher) + " times. Closing lower "
-        # + str(close_lower)+ " times. It closes higher than it opened "+ str((close_higher/length ) * 100) + " percent of the time")
+
     else:
         return ("no Bias detected")
-    # return  open_list, close_list
+
+data_S = get_price_history("AAPL", 'year',1,"daily",1)
 
 def spy_tick_correlation():
 #     SPY and TICK correlation:
@@ -248,7 +242,8 @@ def spy_tick_correlation():
     spy_close_percentage_list = []
     spy_count_for_inverse_list = []
     spy_gap_up_list = []
-
+    spy_high_open_difference_list = []
+    volume_list = []
     count = 0
     spy_green_count = 0
     spy_red_count = 0
@@ -260,16 +255,13 @@ def spy_tick_correlation():
     spy_red_volume_list = []
     spy_red_range_list = []
 
-    tick_data = get_price_history("$TICK", 'year',1,"daily",1)
-    spy_data = get_price_history("SPY", 'year',1,"daily",1)
+    tick_data = get_price_history("$TICK", 'year',3,"daily",1)
+    spy_data = get_price_history("SPY", 'year',3,"daily",1)
     for value in range(len(spy_data.index)-1 ):
 
         if value > 0 :
             tick_open_value = tick_data.iloc[value]['open']
             tick_close_value = tick_data.iloc[value]['close']
-
-            spy_open_value = spy_data.iloc[value]['open']
-            spy_close_value = spy_data.iloc[value]["close"]
 
             spy_green_volume_value = spy_data.iloc[value]['volume']
             spy_green_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
@@ -278,8 +270,8 @@ def spy_tick_correlation():
             spy_red_volume_value = spy_data.iloc[value]['volume']
             spy_red_range_value = spy_data.iloc[value]['high'] - spy_data.iloc[value]['low']
 
-            spy_open_value_for_gap = spy_data.iloc[value +1]['open']
-            spy_close_value_for_gap = spy_data.iloc[value]["close"]
+            spy_open_value_for_gap = spy_data.iloc[value]['open']
+            spy_close_value_for_gap = spy_data.iloc[value-1]["close"]
             gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
             # if tick_open_value > 1000:
@@ -302,22 +294,20 @@ def spy_tick_correlation():
             #         spy_red_volume_list.append(spy_red_volume_value)
             #         spy_red_range_list.append(spy_red_range_value)
 
-            # if tick_open_value > 1000 and gap_up_percent < 0:
-            #     tick_1000_spy_neg_gap_list.append(gap_up_percent)
-            #     tick_list_open.append(tick_open_value)
-            #     tick_list_close.append(tick_close_value)
-            #     spy_close_percentage = ((spy_open_value-spy_close_value) / spy_close_value)*100
-            #     spy_close_percentage_list.append(spy_close_percentage)
-
-            if tick_open_value > 750 and gap_up_percent > .50:
-                # count_i = 0
-                # count_i += 1
-
-                tick_list_open.append(tick_close_value)
-
-
-
-
+            if tick_open_value > 750 and gap_up_percent < .25:
+                # tick_1000_spy_neg_gap_list.append(gap_up_percent)
+                tick_list_open.append(tick_open_value)
+                tick_list_close.append(tick_close_value)
+                spy_open_value = spy_data.iloc[value]['open']
+                spy_close_value = spy_data.iloc[value]["close"]
+                spy_close_percentage = ((spy_open_value-spy_close_value) / spy_close_value)*100
+                spy_close_percentage_list.append(spy_close_percentage)
+                spy_gap_up_list.append(gap_up_percent)
+                spy_high_open_difference = spy_data.iloc[value]['high']-spy_data.iloc[value]['open']
+                spy_high_open_difference_list.append(spy_high_open_difference)
+                spy_volume = spy_data.iloc[value]['volume']
+                volume_list.append(spy_volume)
+                # print(spy_close_percentage_list)
 
 
 
@@ -331,12 +321,18 @@ def spy_tick_correlation():
     # now I need to get more specific. usually when there is a green day when is the low of day put in?
     # for value in spy_close_percentage_list:
     #     print(value)
+    data_dictionary = {'Tick open': tick_list_open,"Spy gap percentage": spy_gap_up_list, "high open difference dollar":spy_high_open_difference_list,'Volume': volume_list,"xSpy close percentage": spy_close_percentage_list}
 
-    return tick_list_open
+
+    tick_spy_df = pd.DataFrame(data_dictionary)
+    return tick_spy_df
 test_value = spy_tick_correlation()
+# print(test_value)
+# test_value.to_csv('tick positive spy neg.csv')
+# print(test_value)
 # to_excel_value = pd.DataFrame(data = test_value)
 # to_excel_value.to_csv('importvaluesz.csv')
-print(test_value)
+# print(test_value)
 
 def breakout_fiveday(price_history):
     list_of_five_day_range = []
@@ -457,32 +453,17 @@ def email_alert( body, to):
     server.send_message(msg)
 
     server.quit
-
 # this is the correct way to have the statement
 # email_alert("test test", '7758468699@messaging.sprintpcs.com')
 
 
-data_S = get_price_history("AAPL", 'year',1,"daily",1)
-# data_S.to_csv('data_S_.csv')
-# for num in range(len(data_S)):
-#     print(num)
-# check_data = breakout_fiveday(data_S)
-
-# print(lizard_trade(data_S))
-print(gap_up_certain_up_or_down(data_S, 5.00))
-# print(get_MA(data_S))
-# print(spy_tick_correlation())
-# print(data_S)
-# test_data  = get_price_history("AAPL","day",10,"day", 1)
+# data_tick = get_price_history("$TICK", 'year',1,"daily",1)
+data_spy = get_price_history("SPY", 'year',2,"daily",1)
+new_df = pd.DataFrame(data_spy)
+new_df.to_csv("all data regression.csv")
 
 
 
+dataz = get_price_history("AAPL", 'year',2,"daily",1)
 
-
-
-
-
-
-
-
-# pd.set_option("display.max_rows", None, "display.max_columns", None)
+# print(dataz)
