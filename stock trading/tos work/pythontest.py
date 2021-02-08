@@ -35,13 +35,14 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
         new_time = datetime.datetime.fromtimestamp(time / 1e3)
         datetime_list.append(str(new_time))
 
-    data_dic = {stocks:{'open':open_list,'high': high_list, "low": low_list, "close": close_list, "volume":volume_list, 'datetime':datetime_list}}
+    data_dic = {'open':open_list,'high': high_list, "low": low_list, "close": close_list, "volume":volume_list, 'datetime':datetime_list}
 
     return data_dic
 
 dataz = get_price_history("AAPL", 'year',1,"daily",1)
-# data_df = pd.DataFrame(dataz[0])
-open_data = dataz['AAPL']['open']
 
-
-pprint.pprint(open_data)
+open_data = dataz['open']
+for i in open_data:
+    print('opening:', i)
+    print('high: ', dataz[i]['high'])
+    # print(i)
