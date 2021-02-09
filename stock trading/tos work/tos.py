@@ -223,7 +223,7 @@ def gap_up_certain_up_or_down(data,percent):
     else:
         return ("no Bias detected")
 
-data_S = get_price_history("AAPL", 'year',1,"daily",1)
+
 
 def spy_tick_correlation():
 #     SPY and TICK correlation:
@@ -459,6 +459,17 @@ def email_alert( body, to):
 
 # data_tick = get_price_history("$TICK", 'year',1,"daily",1)
 data_spy = get_price_history("SPY", 'year',2,"daily",1)
+
+def find_averages(data):
+    vol_list = list(data['volume'])
+    sum_volume = sum(vol_list)
+    len_volume = len(vol_list)
+    avg_volume = sum(list(data['volume'])) / len(list(data['volume']))
+    for i in range(len(data)):
+        open = 0
+        # print(open)
+    return avg_volume
+print(find_averages(data_spy))
 new_df = pd.DataFrame(data_spy)
 new_df.to_csv("all data regression.csv")
 
