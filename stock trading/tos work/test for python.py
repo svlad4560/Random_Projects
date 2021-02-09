@@ -54,6 +54,7 @@ data = get_price_history("AAPL","day",10,"minute", 1)
 
 def find_averages(data):
     avg_volume = sum(volume_list) / len(volume_list)
+
     avg_range_list = []
     for i in range(len(data)):
         high = high_list[i]
@@ -62,6 +63,12 @@ def find_averages(data):
         avg_range_list.append(ranges)
 
     avg_range = sum(avg_range_list)/ len(avg_range_list)
-    return avg_volume ,avg_range
+
+    count_how_many = 0
+    for i in avg_range_list:
+        if i > avg_range:
+            count_how_many+1
+
+    return avg_volume ,avg_range, count_how_many
 
 print(find_averages(data))

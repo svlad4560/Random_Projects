@@ -459,7 +459,7 @@ def email_alert( body, to):
 
 # data_tick = get_price_history("$TICK", 'year',1,"daily",1)
 data_spy = get_price_history("SPY", 'year',2,"daily",1)
-data_spy.to_csv('avg_test.csv')
+
 def find_averages(data):
     vol_list = list(data['volume'])
     sum_volume = sum(vol_list)
