@@ -50,7 +50,11 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
     return df_of_columns
 
-data = get_price_history("AAPL","day",10,"minute", 1)
+data = get_price_history("AAPL","day",1,"minute", 1)
+# data_5_minutes = get_price_history("AAPL","day",1,'minute',5)
+# data_5_minutes.to_csv("AAPL 5 minute data.csv")
+aapl_5_minute_data = pd.read_csv("AAPL 5 minute data.csv")
+aapl_atr = 3.61
 
 def find_averages(data):
     avg_volume = sum(volume_list) / len(volume_list)
@@ -67,8 +71,12 @@ def find_averages(data):
     count_how_many = 0
     for i in avg_range_list:
         if i > avg_range:
-            count_how_many+1
+            count_how_many+= 1
 
     return avg_volume ,avg_range, count_how_many
 
+def check_consolidation(data):
+    return data
+
 print(find_averages(data))
+print(aapl_5_minute_data)
