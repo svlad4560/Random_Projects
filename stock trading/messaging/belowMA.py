@@ -59,4 +59,4 @@ def send_ma_update():
         # print(variable)
 
 
-send_ma_update()
+email_alert("test",'7758468699@messaging.sprintpcs.com')

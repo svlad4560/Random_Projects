@@ -1,3 +1,13 @@
+# Things I want to look at for data science.
+# I want to see where we are after gapping above ATH with above average volume. Where does it close after 3 days.
+#
+#
+# Trading strategies:
+#
+# If the current volume on the bar > avg 1 minute volume bar but the price range of that bar is less than the avg 1 minute bar.
+#
+# ATVI gap up above ATH and now consolidating in a range a little over an ATR. This compression how much volume is there? I also want to see on the break out of this high.
+
 import requests
 import json
 import pprint
