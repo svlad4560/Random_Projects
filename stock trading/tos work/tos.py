@@ -69,7 +69,9 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
     return df_of_columns
 
+
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
+
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')

@@ -28,37 +28,56 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
         updated_dates.append(new_vars)
     df_of_columns['date'] = updated_dates
 
-    hour_dates = []
-    for i in updated_dates:
-        hour = i.time()
-        hour_dates.append(hour)
-
-    df_of_columns['hour'] = hour_dates
+    # hour_dates = []
+    # for i in updated_dates:
+    #     hour = i.time()
+    #     hour_dates.append(hour)
+    #
+    # short_hand_date_list = []
+    # for i in updated_dates:
+    #     date = i.date()
+    #     short_hand_date_list.append(date)
+    #
+    # df_of_columns['hour'] = hour_dates
+    # df_of_columns['short date'] = short_hand_date_list
     df_of_columns = df_of_columns.drop(columns = ["datetime"])
     # df_of_columns = df_of_columns.drop(columns = ["date"])
 
     return df_of_columns
 
-# data_S = get_price_history("AMD", 'year',1,"daily",1)
+data_S = get_price_history("AMD", 'year',1,"daily",1)
+# print(type(data_S.iloc[0]['date']))
 traded_symbols = ['FUTU']
-# print(data_S)
-
-# print(highs.iloc[len(highs)-6:len(highs)-1])
+# traded_symbols = list(trade_data_df['Symbol'])
 
 
 
-
-def find_trade_varaiables(symbols_traded):
+def find_trade_varaiables():
     # find the gap percentage, where it is on the daily 5 day range and 21 day range, avg volume, price, volume on the day, float, insituitional owner ship. where did it open compared to premarket,
-    trade_data_df = pd.DataFrame()
+    trade_data_df = pd.read_csv('trades.csv')
+
     end = datetime.datetime.now()
     start = end-datetime.timedelta(365)
 
+    big_picture_range_value_list = []
+    five_day_range_value_list = []
+    average_volume_list = []
+    gap_percentage_list = []
+    atr_list = []
+    premarket_df = pd.DataFrame()
+    postmarket_df = pd.DataFrame()
+    premarket_high_list = []
+    premarket_low_list = []
+    postmarket_high_list = []
+    postmarket_low_list = []
+    non_market_hours_value_list = []
+    final_test_list =[]
 
-
-    for i in symbols_traded:
+    for i in trade_data_df['Symbol']:
 
         df = web.DataReader(i, 'yahoo', start, end)
+        # # TODO: delete the shit columns
+        # TODO: make also check if on that day do we go to the low and test?
 
         closing_prices = df['Close']
         highs = df.iloc[:-1]['High']
@@ -66,9 +85,9 @@ def find_trade_varaiables(symbols_traded):
         opening_price = df.iloc[-1]['Open']
         prior_close = df.iloc[-2]['Close']
 
-
         gap_percentage = ((opening_price-prior_close)/prior_close ) *100
         gap_percentage = round(gap_percentage,2)
+        gap_percentage_list.append(gap_percentage)
 
         big_picture_range = max(highs)-min(lows)
 
@@ -95,6 +114,8 @@ def find_trade_varaiables(symbols_traded):
             # opening below yearly low
             range_value = 0
 
+        big_picture_range_value_list.append(range_value)
+
         five_day_range_high = highs.iloc[len(highs)-5:len(highs)]
         actual_high = max(five_day_range_high)
 
@@ -120,100 +141,222 @@ def find_trade_varaiables(symbols_traded):
         if (opening_price < actual_low):
             five_day_range_value = 0
 
+        five_day_range_value_list.append(five_day_range_value)
+
+        # this is the average of the year but it can be changed
+        avg_volume = df.Volume.mean()
+        average_volume_list.append(avg_volume)
+#_____________________________________________________________________________________________________________________________________________
         #premarket ranges
-        data = get_price_history(i, 'day',1,"minute",1)
-    # this is the average of the year but it can be changed
-    avg_volume = df.Volume.mean()
+        data_S = get_price_history(i, 'day',2,"minute",5)
+        # data_S.to_csv('timedatesshit.csv')
 
-# some of the things that I am confused on is where the opening price is and the range of the 5 days. I will look at this after 10
-    return opening_price
+        market_open_time = datetime.time(6,30,00)
+        market_close_time = datetime.time(13,00,00)
 
-# pd.set_option("display.max_rows", None, "display.max_columns", None)
-# market open time :
-data_S = get_price_history("FUTU", 'day',1,"minute",1)
-# data_S.to_csv('timedatesshit.csv')
+        for j in range(len(data_S)-1):
+            # print('starting j loop')
+            date = data_S.iloc[j]['date']
+            good_date = date.to_pydatetime()
+            hour = good_date.time()
+            date = good_date.date()
 
-market_open_time = datetime.time(6,30,00)
-market_close_time = datetime.time(13,00,00)
-# list_of_time = data_S['hour'].tolist()
-list_of_time = data_S['hour']
+            pre_market_date = datetime.datetime.now()
+            pre_market_date = pre_market_date.date()
+            pre_market_date = pre_market_date - datetime.timedelta(2)
 
-premarket_df = pd.DataFrame()
-postmarket_df = pd.DataFrame()
-hour_list_pre = []
-hour_list_post = []
-premarket_high_list = []
-premarket_low_list = []
-postmarket_high_list = []
-postmarket_low_list = []
+            post_marekt_date = datetime.datetime.now()
+            post_marekt_date = post_marekt_date.date()
+            post_marekt_date = post_marekt_date - datetime.timedelta(3)
 
-for i in range(len(data_S)):
-    time_check = data_S.iloc[i]['hour']
+            if hour > market_close_time and date ==  post_marekt_date:
+                global pm_high
+                pm_high = data_S.iloc[j]['high']
+                pm_low = data_S.iloc[j]['low']
+                print(pm_high)
+                postmarket_high_list.append(data_S.iloc[j]['high'])
 
-    if time_check < market_open_time:
-        high = data_S.loc[i]['high']
-        low = data_S.iloc[i]['low']
+            # postmarket_low_list.append(pm_low)
+                # print('past market close')
 
-        premarket_high_list.append(high)
-        premarket_low_list.append(low)
-        hour_list_pre.append(time_check)
+            if hour < market_open_time and date == pre_market_date:
+                high = data_S.loc[j]['high']
+                low = data_S.iloc[j]['low']
 
-    if time_check > market_close_time:
-        pm_high = data_S.iloc[i]['high']
-        pm_low = data_S.iloc[i]['low']
+            # premarket_high_list.append(high)
+            # premarket_low_list.append(low)
+                # print('before market open')
 
-        postmarket_high_list.append(pm_high)
-        postmarket_low_list.append(pm_low)
-        hour_list_post.append(time_check)
+    #     premarket_df['premarket high'] = premarket_high_list
+    #     premarket_df['premarket low'] = premarket_low_list
 
-# so the biggest issue is that the post market is longer than premarket
-# the data is not perfect some times it is missing some minute data and I dont know why
-premarket_df['premarket high'] = premarket_high_list
-premarket_df['premarket low'] = premarket_low_list
-premarket_df['premarket hour'] = hour_list_pre
-postmarket_df['postmarket high'] = postmarket_high_list
-postmarket_df['postmarket low'] = postmarket_low_list
-postmarket_df['hour']= hour_list_post
+    #     postmarket_df['postmarket high'] = postmarket_high_list
+    #     postmarket_df['postmarket low'] = postmarket_low_list
 
-# premarket_df.to_csv('premarket data.csv')
-# postmarket_df.to_csv('post market.csv')
+    #
+    #     pre_market_high = max(premarket_df['premarket high'])
+    #     pre_market_low = min(premarket_df['premarket low'])
+    #     post_market_high = max(postmarket_df['postmarket high'])
+    #     post_market_low = min(postmarket_df['postmarket low'])
+    #
+    #     if pre_market_high > post_market_high:
+    #         non_market_hours_high = pre_market_high
+    #     else:
+    #         non_market_hours_high = post_market_high
+    #
+    #     if pre_market_low < post_market_low:
+    #         non_market_hours_low = pre_market_low
+    #     else:
+    #         non_market_hours_low = post_market_low
+    #
+    #     # yikes this is going to need to be fixed
+    #     non_market_hours_midpoint = (non_market_hours_high + non_market_hours_low) / 2
+    #     non_market_hours_75 = (non_market_hours_midpoint+non_market_hours_high) /2
+    #     non_market_hours_25 = (non_market_hours_midpoint+non_market_hours_low) /2
+    #
+    #     if opening_price > non_market_hours_high:
+    #         non_market_hours_value = 5
+    #     if ((opening_price < non_market_hours_high) and (opening_price > non_market_hours_75)):
+    #         non_market_hours_value = 4
+    #     if ((opening_price < non_market_hours_75) and (opening_price > non_market_hours_midpoint)):
+    #         non_market_hours_value = 3
+    #     if ((opening_price < non_market_hours_midpoint) and (opening_price > non_market_hours_25)):
+    #         non_market_hours_value = 2
+    #     if ((opening_price < non_market_hours_25) and (opening_price > non_market_hours_low)):
+    #         non_market_hours_value = 1
+    #     if (opening_price < non_market_hours_low):
+    #         non_market_hours_value = 0
+    #
+    #     non_market_hours_value_list.append(non_market_hours_value)
+    #
+    # trade_data_df['gap percentage'] = gap_percentage_list
+    # trade_data_df['opening price vs big picture'] = big_picture_range_value_list
+    # trade_data_df['opening price vs 5 day range'] = five_day_range_value_list
+    # trade_data_df['avg volume'] = average_volume_list
+    # trade_data_df['opening price vs non market hours range'] = pd.Series(trade_data_df['opening price vs non market hours range'])
+    # trade_data_df['opening price vs non market hours range'] = non_market_hours_value_list
 
-pre_market_high = max(premarket_df['premarket high'])
-pre_market_low = min(premarket_df['premarket low'])
-post_market_high = max(postmarket_df['postmarket high'])
-post_market_low = min(postmarket_df['postmarket low'])
+    return  postmarket_high_list
+# this is what is returned for the final version
+# trade_data_df.to_csv('trade v1ariables.csv')
 
-if pre_market_high > post_market_high:
-    non_market_hours_high = pre_market_high
-else:
-    non_market_hours_high = post_market_high
+# opening_price = 78.49
+# data_S = get_price_history('AMD', 'day',2,"minute",5)
+# # print(data_S)
+# market_open_time = datetime.time(6,30,00)
+# market_close_time = datetime.time(13,00,00)
+#
+#
+# premarket_df = pd.DataFrame()
+# postmarket_df = pd.DataFrame()
+# hour_list_pre = []
+# hour_list_post = []
+# premarket_high_list = []
+# premarket_low_list = []
+# postmarket_high_list = []
+# postmarket_low_list = []
+# date_list = []
+# date_list_pre = []
+# non_market_hours_value_list = []
+# for j in range(len(data_S)-1):
+#     date = data_S.iloc[j]['date']
+#     good_date = date.to_pydatetime()
+#     hour = good_date.time()
+#     date = good_date.date()
+#
+#     # time_check = data_S.iloc[i]['hour']
+#     # date_check = data_S.iloc[i]['short date']
+#
+#     pre_market_date = datetime.datetime.now()
+#     pre_market_date = pre_market_date.date()
+#     pre_market_date = pre_market_date - datetime.timedelta(2)
+#
+#     post_marekt_date = datetime.datetime.now()
+#     post_marekt_date = post_marekt_date.date()
+#     post_marekt_date = post_marekt_date - datetime.timedelta(3)
+#     # print(previous_day)
+#     # print(current_date)
+#     # previous_day = previous_day.date()
+#
+#     if hour > market_close_time and date ==  post_marekt_date:
+#         pm_high = data_S.iloc[j]['high']
+#         pm_low = data_S.iloc[j]['low']
+#
+#         postmarket_high_list.append(pm_high)
+#         postmarket_low_list.append(pm_low)
+#         hour_list_post.append(hour)
+#         date_list.append(date)
+#
+#     if hour < market_open_time and date == pre_market_date:
+#         high = data_S.loc[j]['high']
+#         low = data_S.iloc[j]['low']
+#
+#         premarket_high_list.append(high)
+#         premarket_low_list.append(low)
+#         hour_list_pre.append(hour)
+#         date_list_pre.append(date)
+#
+# premarket_df['premarket high'] = premarket_high_list
+# premarket_df['premarket low'] = premarket_low_list
+# premarket_df['premarket hour'] = hour_list_pre
+# premarket_df['hour'] = hour_list_pre
+# premarket_df['date'] = date_list_pre
+# postmarket_df['postmarket high'] = postmarket_high_list
+# postmarket_df['postmarket low'] = postmarket_low_list
+# postmarket_df['hour']= hour_list_post
+# postmarket_df['date'] = date_list
+#
+# # premarket_df.to_csv('premarket data.csv')
+# # postmarket_df.to_csv('post market.csv')
+#
+# pre_market_high = max(premarket_df['premarket high'])
+# pre_market_low = min(premarket_df['premarket low'])
+# post_market_high = max(postmarket_df['postmarket high'])
+# post_market_low = min(postmarket_df['postmarket low'])
+#
+# if pre_market_high > post_market_high:
+#     non_market_hours_high = pre_market_high
+# else:
+#     non_market_hours_high = post_market_high
+#
+# if pre_market_low < post_market_low:
+#     non_market_hours_low = pre_market_low
+# else:
+#     non_market_hours_low = post_market_low
+#
+# # yikes this is going to need to be fixed
+# non_market_hours_midpoint = (non_market_hours_high + non_market_hours_low) / 2
+# non_market_hours_75 = (non_market_hours_midpoint+non_market_hours_high) /2
+# non_market_hours_25 = (non_market_hours_midpoint+non_market_hours_low) /2
+#
+# if opening_price > non_market_hours_high:
+#     non_market_hours_value = 5
+# if ((opening_price < non_market_hours_high) and (opening_price > non_market_hours_75)):
+#     non_market_hours_value = 4
+# if ((opening_price < non_market_hours_75) and (opening_price > non_market_hours_midpoint)):
+#     non_market_hours_value = 3
+# if ((opening_price < non_market_hours_midpoint) and (opening_price > non_market_hours_25)):
+#     non_market_hours_value = 2
+# if ((opening_price < non_market_hours_25) and (opening_price > non_market_hours_low)):
+#     non_market_hours_value = 1
+# if (opening_price < non_market_hours_low):
+#     non_market_hours_value = 0
+#
+# print(non_market_hours_value)
 
-if pre_market_low < post_market_low:
-    non_market_hours_low = pre_market_low
-else:
-    non_market_hours_low = post_market_low
 
-non_market_hours_midpoint = (non_market_hours_high + non_market_hours_low) / 2
-non_market_hours_75 = (non_market_hours_midpoint+non_market_hours_high) /2
-non_market_hours_25 = (non_market_hours_midpoint+non_market_hours_low) /2
-opening_price = 142.02
-if opening_price > non_market_hours_high:
-    non_market_hours_value = 5
-if ((opening_price < non_market_hours_high) and (opening_price > non_market_hours_75)):
-    non_market_hours_value = 4
-if ((opening_price < non_market_hours_75) and (opening_price > non_market_hours_midpoint)):
-    non_market_hours_value = 3
-if ((opening_price < non_market_hours_midpoint) and (opening_price > non_market_hours_25)):
-    non_market_hours_value = 2
-if ((opening_price < non_market_hours_25) and (opening_price > non_market_hours_low)):
-    non_market_hours_value = 1
-if (opening_price < non_market_hours_low):
-    non_market_hours_value = 0
-print(data_S)
-print(non_market_hours_value)
+tradeds =  ['GME', "AAPL"]
 
 
+data_G = get_price_history('GME', 'day',2,"minute",5)
+data_A = get_price_history('AAPL', 'day',1,"minute",5)
 
+# print( data_S.iloc[0]['date'])
 
-
-print(find_trade_varaiables(traded_symbols))
+# data_G.to_csv('GMEs.csv')
+# data_A.to_csv('AaApl.csv')
+find_trade_varaiables()
+post_marekt_date = datetime.datetime.now()
+post_marekt_date = post_marekt_date.date()
+post_marekt_date = post_marekt_date - datetime.timedelta(3)
+# print(post_marekt_date)

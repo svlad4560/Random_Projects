@@ -1,0 +1,24 @@
+Open Datetime,Close Datetime,Symbol,Side,Volume,Exec Count,Entry Price,Exit Price,Gross P&L,Gross P&L (%),Shared,Notes,Tags,Gross P&L (t),Net P&L,Commissions,Fees,Initial Risk,Position MFE,Position MAE,Price MFE,Price MAE,Position MFE Datetime,Position MAE Datetime,Price MFE Datetime,Price MAE Datetime,Best Exit P&L,Best Exit Datetime
+3/18/2021 13:34,3/18/2021 15:18,GME,S,14,10,205.01,200.87,22.76,1.59,FALSE,"
+Trade Idea: 7/10
+Trade Management: 7.5/10
+
+I definitly could have improved my second to last exit and I should have never gotten into that last supid position. ","Bounce off resistance,PDT",,22.7558,0.0042,0,,27.98,-8.14,9.36,-2.89,3/18/2021 15:15,3/18/2021 14:00,3/18/2021 15:15,3/18/2021 13:59,27.98,3/18/2021 15:15
+3/18/2021 13:33,3/18/2021 14:15,TSLA,L,8,4,671.05,666.69,-11.92,-0.44,FALSE,"
+Trade Idea: 7/10
+Trade Management: 6/10
+With these mean reversion trades I always have to think about taking risk off once I am right and I want to make sure that I am right as quick as possible. ","PDT,mean reversion",,-11.9224,0.0024,0,,5.9,-11.92,2.95,-4.36,3/18/2021 13:43,3/18/2021 14:15,3/18/2021 13:43,3/18/2021 14:15,-4.54,3/18/2021 14:06
+3/18/2021 12:51,3/18/2021 14:10,AAL,L,62,4,25.71,25.33,-10.1,-1.27,FALSE,"
+Trade Idea: 7.9/10
+Trade Management: 6/10
+
+I definitly should have just put it at below vwap with like 10 cents instead of 20. ","PDT,bounce from VWAP,midday volume spike",,-10.1186,0.0186,0,,0.875,-10.1,0,-0.38,3/18/2021 12:52,3/18/2021 14:10,3/18/2021 12:51,3/18/2021 14:10,-0.18,3/18/2021 13:12
+3/18/2021 12:20,3/18/2021 12:34,SINO,L,40,2,9.13,8.85,-5.6,-3.07,FALSE,"
+Trade Idea: 5/10
+Trade Management: 9/10
+
+Looking back this was such a bad trade. It is clearly in a bad down channel with lower highs and lower lows. Not a good trade. ","Bounce from prior HOD,PDT,gap up,mean reversion,questionable",,-5.612,0.012,0,,1.6,-6.4,0.08,-0.32,3/18/2021 12:26,3/18/2021 12:33,3/18/2021 12:26,3/18/2021 12:33,16.4,3/18/2021 13:31
+3/18/2021 12:04,3/18/2021 13:20,GME,S,40,17,206.28,207.62,-9.6,-0.23,FALSE,"
+Trade Idea: 8/10
+Trade Management: 6/10
+I really like the first 3 executions. I should have been better about shorting it earlier and where I shortened were really good spot to short but I gotta be better about getting out if it rebounds to much. Should have been a winner.","PDT,breakdown,breakdown of important level",,-9.612,0.012,0,,18.88,-32.12,4.93,-2.72,3/18/2021 13:03,3/18/2021 12:43,3/18/2021 13:03,3/18/2021 12:09,62.22,3/18/2021 15:15
