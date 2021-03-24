@@ -1,5 +1,22 @@
-Symbol
-GME
-GME
-JFIN
-SPY
+Open Datetime,Close Datetime,Symbol,Side,Volume,Exec Count,Entry Price,Exit Price,Gross P&L,Gross P&L (%),Shared,Notes,Tags,Gross P&L (t),Net P&L,Commissions,Fees,Initial Risk,Position MFE,Position MAE,Price MFE,Price MAE,Position MFE Datetime,Position MAE Datetime,Price MFE Datetime,Price MAE Datetime,Best Exit P&L,Best Exit Datetime
+3/23/2021 9:59,,TSLA,L,54,19,670.26,,-36.252,,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-36.2682,0.0162,0,,,,,,,,,,,
+3/23/2021 9:57,3/23/2021 10:09,GME,S,20,4,188.56,189.28,-12.45,-0.66,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-12.456,0.006,0,,5.3,-14.889,1.2,-2.18,3/23/2021 9:58,3/23/2021 10:05,3/23/2021 10:06,3/23/2021 10:03,-2.85,3/23/2021 10:06
+3/23/2021 9:51,3/23/2021 9:59,TSLA,S,12,7,667.77,670.26,0.976,0.02,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,0.9724,0.0036,0,,15.476,-12.1794,1.88,-3.0299,3/23/2021 9:57,3/23/2021 9:54,3/23/2021 9:57,3/23/2021 9:54,6.816,3/23/2021 9:59
+3/23/2021 9:50,3/23/2021 9:51,TSLA,L,4,2,668.43,667.77,-1.32,-0.1,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-1.3212,0.0012,0,,0,-1.32,0,-0.66,,3/23/2021 9:51,3/23/2021 9:50,3/23/2021 9:51,1.54,3/23/2021 9:51
+3/23/2021 9:49,3/23/2021 9:50,TSLA,S,6,2,667.23,668.43,-3.6,-0.18,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-3.6018,0.0018,0,,0,-3.6,0,-1.2,,3/23/2021 9:50,3/23/2021 9:49,3/23/2021 9:50,1.3632,3/23/2021 9:50
+3/23/2021 9:46,3/23/2021 9:51,MU,L,80,6,90.21,89.51,-16.985,-0.47,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-17.009,0.024,0,,1.9,-16.985,0.15,-0.7,3/23/2021 9:47,3/23/2021 9:51,3/23/2021 9:47,3/23/2021 9:51,-14.085,3/23/2021 9:50
+3/23/2021 9:30,3/23/2021 9:43,TKAT,L,30,12,61.05,62.43,-2.8791,-0.31,FALSE,"
+Trade Idea:
+Trade Management:",PDT,,-2.8881,0.009,0,,13.58,-2.8791,9.58,-0.85,3/23/2021 9:34,3/23/2021 9:43,3/23/2021 9:39,3/23/2021 9:32,2.6709,3/23/2021 9:41
