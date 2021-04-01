@@ -1,0 +1,8 @@
+,Open Datetime,Close Datetime,Symbol,gap percentage,avg volume,ATR,spy gap percentage,Opening vs 5 day range SPY,opening price vs big picture,opening price vs 5 day range
+0,3/23/2021 9:59,,TSLA,0.86,59672601.58,49.73908858,-0.17,opening below five day range midpoint and above 25%,3,opening below five day range 75% and above midpoint
+1,3/23/2021 9:57,3/23/2021 10:09,GME,1.55,16258757.86,43.62136269,-0.17,opening below five day range midpoint and above 25%,2,opening below five day range midpoint and above 25%
+2,3/23/2021 9:51,3/23/2021 9:59,TSLA,0.86,59672601.58,49.73908858,-0.17,opening below five day range midpoint and above 25%,3,opening below five day range 75% and above midpoint
+3,3/23/2021 9:50,3/23/2021 9:51,TSLA,0.86,59672601.58,49.73908858,-0.17,opening below five day range midpoint and above 25%,3,opening below five day range 75% and above midpoint
+4,3/23/2021 9:49,3/23/2021 9:50,TSLA,0.86,59672601.58,49.73908858,-0.17,opening below five day range midpoint and above 25%,3,opening below five day range 75% and above midpoint
+5,3/23/2021 9:46,3/23/2021 9:51,MU,-0.28,21012106.6,4.583299117,-0.17,opening below five day range midpoint and above 25%,4,opening below five day range midpoint and above 25%
+6,3/23/2021 9:30,3/23/2021 9:43,TKAT,20.41,1009146.226,5.229454517,-0.17,opening below five day range midpoint and above 25%,5,opening above five day range high

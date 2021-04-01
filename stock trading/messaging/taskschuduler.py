@@ -5,18 +5,6 @@ import pandas as pd
 import smtplib
 from email.message import EmailMessage
 
-td_consumer_key = 'HS7K2SZXYBG2HMOYU6JOMXWAWA2QRASG'
-
-def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_time):
-    endpoint_price_history = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&period={period}&frequencyType={frequencyType}&frequency={frequency}'
-    full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType=timeframe_big,period=num_of_days,frequencyType=timeframe,frequency=num_of_big_time)
-    # endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
-    page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
-    content = json.loads(page.content)
-    data = pd.DataFrame(data=content)
-    df_of_columns = data["candles"].apply(pd.Series)
-    return df_of_columns
-
 def email_alert( body, to):
     msg = EmailMessage()
     msg.set_content(body)
@@ -34,7 +22,7 @@ def email_alert( body, to):
 
     server.quit
 
-basket_of_stocks = ['AMD','FB', 'AAPL', 'TSLA', 'SPY', 'QQQ']
+email_alert('Task Scheduler works', '7758468699@messaging.sprintpcs.com')
 
 def send_ma_update():
     for stock in basket_of_stocks:
@@ -51,12 +39,3 @@ def send_ma_update():
             #T-mobile [insert 10-digit number]@tmomail.net
             # verizon [insert 10-digit number]@vtext.com
             email_alert(stock + " is lower than its 5 day MA. Its 5 day MA is: " + str(ma_5), '7752241146@tmomail.net')
-
-
-
-
-        # print(str(ma_5)  +"  " +stock)
-        # print(variable)
-
-
-email_alert("test",'7758468699@messaging.sprintpcs.com')

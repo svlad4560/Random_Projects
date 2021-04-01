@@ -1,3 +1,13 @@
+# Things I want to look at for data science.
+# I want to see where we are after gapping above ATH with above average volume. Where does it close after 3 days.
+#
+#
+# Trading strategies:
+#
+# If the current volume on the bar > avg 1 minute volume bar but the price range of that bar is less than the avg 1 minute bar.
+#
+# ATVI gap up above ATH and now consolidating in a range a little over an ATR. This compression how much volume is there? I also want to see on the break out of this high.
+
 import requests
 import json
 import pprint
@@ -59,7 +69,9 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
     return df_of_columns
 
+
 data_S = get_price_history("AAPL", 'year',1,"daily",1)
+
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
     endpoint = base_url.format(stock_ticker = 'AAL', contract_type = 'PUT', strike = 9, date='2020-06-19')

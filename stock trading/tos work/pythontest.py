@@ -41,8 +41,15 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
 
 dataz = get_price_history("AAPL", 'year',1,"daily",1)
 
+
+# this is how to get everything with the name of the key and the value
+for i,v in dataz.items():
+    for x in v:
+        print(i,x)
+
 open_data = dataz['open']
 for i in open_data:
-    print('opening:', i)
-    print('high: ', dataz[i]['high'])
-    # print(i)
+    print('Open: ', i)
+
+test_list = [1,2,3,4,5,6,7,8,9,10]
+x for x in test_list:

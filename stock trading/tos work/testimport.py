@@ -120,9 +120,13 @@ def spy_tick_correlation():
 
             gap_up_percent = ((spy_open_value_for_gap-spy_close_value_for_gap) / spy_close_value_for_gap)*100
 
-            print(spy_open_value,spy_close_value, gap_up_percent )
+            # print(spy_open_value,spy_close_value, gap_up_percent )
 
             if  tick_open_value > 1000:
+
+                if value >4:
+                    five_day_range = [-5:i]
+                tick_list_open.append(tick_open_value)
 
                 spy_open_value_for_close_percentage= spy_data.iloc[value]['open']
                 spy_close_value_for_close_percentage = spy_data.loc[value]["close"]
@@ -190,7 +194,7 @@ def spy_tick_correlation():
     # for value in sector_gap_up_list:
     #     for num in value:
     #         print(num)
-    new_data_for_df = {'SPY Gap Up':spy_gap_list,"XLF Gap Up": xlf_gapup_list, "XLV Gap Up": xlv_gapup_list,"QQQ gap up":  qqq_gapup_list, "XLE Gap Up":xle_gapup_list, "XLY Gap Up": xly_gapup_list}
+    new_data_for_df = {'SPY Gap Up':spy_gap_list,"TICK open": tick_list_open,"XLF Gap Up": xlf_gapup_list, "XLV Gap Up": xlv_gapup_list,"QQQ gap up":  qqq_gapup_list, "XLE Gap Up":xle_gapup_list, "XLY Gap Up": xly_gapup_list}
     new_data = pd.DataFrame(new_data_for_df)
     new_data['SPY Close Percentage'] = spy_close_percentage_list
     new_data['XLF Close percentage'] = xlf_close_percentage_list
@@ -217,3 +221,6 @@ excel_data = spy_tick_correlation()
 excel_data.to_csv("sector data.csv")
 
 print(spy_tick_correlation())
+# what are some other variables that I want to check for.
+    variables_to_check = [tick_open,spy_gap_percent,spy_percentage,distance_from_5day_ema,and_the_distance_from_50, SPY_volume, sector_volume, where_is_spy_and_sector_on_daily, ]
+    what_to_maximize = [close_distance_from_open, as_well_what_sector performance the best when gapping up]
