@@ -16,12 +16,16 @@ import math
 i = 0
 while i in range(2):
 
-    test_input = 100
+    test_input = 500
+
     trading_risks = input(str(" What is your stop loss? " ))
     trading_risks = float(trading_risks)
     how_i_want_it = '''
     Intraday | ''' + str(test_input) + '''
     Trading  | ''' + str(trading_risks) + '''
+
+    _______________
+    5%       | ''' + str((round((test_input * .05)/ trading_risks))) + '''
     _______________
     10%      | ''' + str((round((test_input * .10)/ trading_risks))) + '''
     _______________
@@ -30,16 +34,7 @@ while i in range(2):
     30%      | ''' + str((round((test_input * .30)/ trading_risks))) + '''
     _______________
     40%      | ''' + str((round((test_input * .40)/ trading_risks))) + '''
-    _______________
-    50%      | ''' + str((round((test_input * .50)/ trading_risks))) + '''
-    _______________
-    60%      | ''' + str((round((test_input * .60)/ trading_risks))) + '''
-    _______________
-    70%      | ''' + str((round((test_input * .70)/ trading_risks))) + '''
-    _______________
-    80%      | ''' + str((round((test_input * .80)/ trading_risks))) + '''
-    _______________
-    90%      | ''' + str((round((test_input * .90)/ trading_risks))) + '''
+
     '''
 
     print(how_i_want_it)

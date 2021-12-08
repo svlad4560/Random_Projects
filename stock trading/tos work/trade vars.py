@@ -8,7 +8,6 @@ import pandas_datareader.data as web
 import math
 import pprint
 
-
 td_consumer_key = 'HS7K2SZXYBG2HMOYU6JOMXWAWA2QRASG'
 
 def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_time):
@@ -29,38 +28,26 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     df_of_columns['date'] = updated_dates
     df_of_columns = df_of_columns.drop(columns = ["datetime"])
     return df_of_columns
-trade_data_df = pd.read_csv('trades.csv')
+
 
 def find_trade_varaiables():
     # find the gap percentage, where it is on the daily 5 day range and 21 day range, avg volume, price, volume on the day, float, insituitional owner ship. where did it open compared to premarket,
     trade_data_df = pd.read_csv('trades.csv')
-    end = datetime.datetime.now()
-    start = end-datetime.timedelta(365)
-    spy_df = web.DataReader('SPY', 'yahoo', start, end)
-
-    end = datetime.datetime.now() - datetime.timedelta(1)
-    start = end-datetime.timedelta(365)
-
-
     big_picture_range_value_list = []
     five_day_range_value_list = []
     average_volume_list = []
     gap_percentage_list = []
     atr_list = []
-    premarket_df = pd.DataFrame()
-    postmarket_df = pd.DataFrame()
-    premarket_high_list = []
-    premarket_low_list = []
-    postmarket_high_list = []
-    postmarket_low_list = []
     non_market_hours_value_list = []
     final_test_list =[]
     spy_gap_percentage_list = []
 
     traded_symbols_list = list(trade_data_df['Symbol'])
 
-# I am going to need to change the final and intial values # TODO:
-    spy_df = web.DataReader('SPY', 'yahoo', start, end)
+# I am going to need to change the final and intial values
+    SPY_end = datetime.datetime.now() - datetime.timedelta(1)
+    SPY_start = SPY_end-datetime.timedelta(365)
+    spy_df = web.DataReader('SPY', 'yahoo', SPY_start, SPY_end)
     spy_final_open = spy_df.iloc[-1]['Open']
     spy_intial_close = spy_df.iloc[-2]['Close']
     spy_gap_percentage = ((spy_final_open-spy_intial_close)/spy_intial_close) * 100
@@ -103,11 +90,9 @@ def find_trade_varaiables():
         SPY_five_day_range_value.append(five_day_range_value)
 
     end = datetime.datetime.now() - datetime.timedelta(1)
-    end = end.date()
-    start = datetime.datetime.now() - datetime.timedelta(366)
-    start = start.date()
-    spy_df = web.DataReader('SPY', 'yahoo', start, end)
+    start = end-datetime.timedelta(365)
     rvol_list = []
+    print('dont with SPY')
     for i in trade_data_df['Symbol']:
         print(i)
         df = web.DataReader(i, 'yahoo', start, end)
@@ -182,8 +167,9 @@ def find_trade_varaiables():
         # this is the average of the year but it can be changed
         avg_volume = df.Volume.mean()
         average_volume_list.append(avg_volume)
-#_____________________________________________________________________________________________________________________________________________
-        #premarket ranges
+    print('dont with 5 day range')
+#____________________________________________________________________________________________________________________________________________
+    #premarket ranges
     market_open_time = datetime.time(6,30,00)
     market_close_time = datetime.time(13,00,00)
     premarket_df = pd.DataFrame()
@@ -325,10 +311,26 @@ def find_trade_varaiables():
         rvol = k/j
         rvol_list.append(rvol)
 
+# this is from how far away is it from the open
+    percent_from_open_list = []
+    start_o = datetime.datetime.now()-datetime.timedelta(2)
+    end_o = datetime.datetime.now()-datetime.timedelta(1)
+
+    for i in range(len(trade_data_df)):
+        trade_symbol = trade_data_df.iloc[i]['Symbol']
+        opened_price = trade_data_df.iloc[i]['Entry Price']
+        data = web.DataReader(trade_symbol, 'yahoo', start_o, end_o)
+        underlying_open = data.iloc[-1]['Open']
+        distance_from_open_percentage = ((opened_price - underlying_open)/underlying_open)*100
+        distance_from_open_percentage = round(distance_from_open_percentage,2)
+        percent_from_open_list.append(distance_from_open_percentage)
+
+
     trade_data_df['gap percentage'] = gap_percentage_list
     trade_data_df['avg volume'] = average_volume_list
     trade_data_df['ATR'] = final_atr_display_list
     trade_data_df['rvol'] = rvol_list
+    trade_data_df['% from open'] = percent_from_open_list
     trade_data_df['spy gap percentage'] = spy_gap_percentage_list
     trade_data_df['OP vs 5 day range SPY'] = SPY_five_day_range_value
     trade_data_df['OP vs big picture'] = big_picture_range_value_list

@@ -75,8 +75,7 @@ stats_df['Average of Next day gap'] = stats_df['Gap Difference Dollars'].mean()
 # print(type(average_for_close_dollar_difference))
 
 
-test_list = [1,2,3,4,5,6,7,8,9,10]
-for i in range(len(test_list)):
-    print(i)
-    print(test_list[i-5:i])
+# print(get_price_history('WBT', 'day',2,"minute",5))
+datas =  get_price_history('AMD', 'day',3,"minute",5)
+datas.to_csv('WBT.csv')
 # print(test_list[:5])

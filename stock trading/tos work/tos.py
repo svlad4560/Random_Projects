@@ -70,7 +70,8 @@ def get_price_history(stocks,timeframe_big, num_of_days, timeframe , num_of_big_
     return df_of_columns
 
 
-data_S = get_price_history("AAPL", 'year',1,"daily",1)
+# data_S = get_price_history("CLOV", 'day',3,"minute",1)
+# data_S.to_csv('test for time.csv')
 
 def get_options_data():
     base_url = 'https://api.tdameritrade.com/v1/marketdata/chains?&symbol={stock_ticker}\&contractType={contract_type}&strike={strike}&fromDate={date}&toDate={date}'
@@ -234,6 +235,8 @@ def gap_up_certain_up_or_down(data,percent):
 
     else:
         return ("no Bias detected")
+
+print(gap_up_certain_up_or_down(get_price_history("TSLA", 'year',3,"daily",1),0.05))
 
 
 
