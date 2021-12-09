@@ -1,16 +1,9 @@
 import pandas as pd
 
 # how to referce the order of a DataFrame
-data_S = get_price_history("AAPL")
-new_df = data_S[::-1]
+data_S = pd.read_csv("real_AAPL data.csv")
 
-# how to index the values of a column
-endpoint_price_history = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&period={period}&frequencyType={frequencyType}&frequency={frequency}'
-full_url_price_history = endpoint_price_history.format(stock_ticker=stocks,periodType='year',period=1,frequencyType='daily',frequency=1)
-page = requests.get(url=full_url_price_history, params={'apikey' : td_consumer_key})
-content = json.loads(page.content)
-data = pd.DataFrame(data=content)
-df_of_columns = data["candles"].apply(pd.Series)
+print(data_S)
 
 
 
@@ -35,7 +28,7 @@ max_id = bars.max()
 print(data_S)
 
 # [X,Y,Z] Z is the most recent with the list at [0] is the most recent data
-print(str(list_of_five_day_range) + " this is last 5 days of data")
+print(f"{list_of_five_day_range} this is last 5 days of data")
 
 # with the first number in the list is for the most recent first day high.
 print(str(list_of_max_value)+" this is maxium number in last 5 days")

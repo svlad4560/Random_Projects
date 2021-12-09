@@ -1,19 +1,26 @@
-age,gender,genre
-20,1,HipHop
-23,1,HipHop
-25,1,HipHop
-26,1,Jazz
-29,1,Jazz
-30,1,Jazz
-31,1,Classical
-33,1,Classical
-37,1,Classical
-20,0,Dance
-21,0,Dance
-25,0,Dance
-26,0,Acoustic
-27,0,Acoustic
-30,0,Acoustic
-31,0,Classical
-34,0,Classical
-35,0,Classical
+age,gender,genre,genre,,,,,,,,,
+20,1,1,HipHop,,,,,,,,,
+23,1,1,HipHop,SUMMARY OUTPUT,,,,,,,,
+25,1,1,HipHop,,,,,,,,,
+26,1,2,Jazz,Regression Statistics,,,,,,,,
+29,1,2,Jazz,Multiple R,0.981496063,,,,,,,
+30,1,2,Jazz,R Square,0.963334521,,,,,,,
+31,1,3,Classical,Adjusted R Square,0.95844579,,,,,,,
+33,1,3,Classical,Standard Error,0.35823062,,,,,,,
+37,1,3,Classical,Observations,18,,,,,,,
+20,0,4,Dance,,,,,,,,,
+21,0,4,Dance,ANOVA,,,,,,,,
+25,0,4,Dance,,df,SS,MS,F,Significance F,,,
+26,0,5,Acoustic,Regression,2,50.57506234,25.28753117,197.0520793,1.70581E-11,,,
+27,0,5,Acoustic,Residual,15,1.924937656,0.128329177,,,,,
+30,0,5,Acoustic,Total,17,52.5,,,,,,
+31,0,6,Classical,,,,,,,,,
+34,0,6,Classical,,Coefficients,Standard Error,t Stat,P-value,Lower 95%,Upper 95%,Lower 95.0%,Upper 95.0%
+35,0,6,Classical,Intercept,0.839650873,0.484481747,1.733090829,0.103581266,-0.192997527,1.872299272,-0.192997527,1.872299272
+,,,,age,0.150374065,0.01697117,8.860559912,2.39402E-07,0.114200873,0.186547257,0.114200873,0.186547257
+,,,,gender,-3.083541147,0.169134533,-18.23129256,1.20157E-11,-3.44404287,-2.723039424,-3.44404287,-2.723039424
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,,,,31,0,,,,,,
+,,,,0.839650873,4.66159601,0,,,,,,
+,,,,6,,,,,,,,
