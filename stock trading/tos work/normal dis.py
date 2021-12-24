@@ -47,7 +47,7 @@ def find_prob_for_over(percent_look_for,input_high_open_perent,symbol):
         # print(i)
         high_open = (high-open)/open
         atr_day = high-low
-        five_day_range = df['High'][-5:]
+        five_day_range = df['High'][i-5:]
 
 
         if high_open > input_high_open_perent and df.iloc[i]["Volume"] > avg_vol and atr_day > atr:

@@ -1,27 +1,27 @@
-# import random
-# import pandas as pd
-# import statistics
-# import numpy as np
-# import matplotlib.pyplot as plt
-#
-# list_of_random = []
-#
-# for i in range(0,100):
-#     x = random.randint(2,12)
-#     list_of_random.append(x)
-#
-#
-#
-# data_for_crabs = {"rt":list_of_random}
-# crabs_random_df = pd.DataFrame(data_for_crabs)
-# # crabs_random_df.to_csv("crabs.csv")
-#
-# good_crabs = pd.read_csv("crabs.csv")
-#
-# mean = good_crabs.rt.mean()
-# stdev = statistics.stdev(good_crabs["rt"])
-# percent_look_for = 5
-# z_score = (percent_look_for - mean)/stdev
+import random
+import pandas as pd
+import statistics
+import numpy as np
+import matplotlib.pyplot as plt
+
+list_of_random = []
+
+for i in range(0,100):
+    x = random.randint(2,12)
+    list_of_random.append(x)
+
+
+
+data_for_crabs = {"rt":list_of_random}
+crabs_random_df = pd.DataFrame(data_for_crabs)
+# crabs_random_df.to_csv("crabs.csv")
+
+good_crabs = pd.read_csv("crabs.csv")
+
+mean = good_crabs.rt.mean()
+stdev = statistics.stdev(good_crabs["rt"])
+percent_look_for = 5
+z_score = (percent_look_for - mean)/stdev
 #
 #
 #

@@ -33,3 +33,14 @@ score = accuracy_score(y_test,prediction)
 #
 #
 print(score)
+
+
+
+
+
+datess = data.iloc[0]['date']
+datess = datess.to_pydatetime()
+time = datess.time()
+time_change =  datetime.timedelta(minutes = 5)
+
+da = datess + time_change

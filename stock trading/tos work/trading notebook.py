@@ -18,4 +18,4 @@ for i in new_list:
     if lengh_of == 2:
 
     # for j in i:
-    #     print("ya")
+        print("ya")

@@ -87,3 +87,5 @@ df['volume greqater'] = volume_average_list
 
 print(df.head())
 df.to_csv('test12345.csv')
+
+df.shift(periods=3, fill_value=0)
